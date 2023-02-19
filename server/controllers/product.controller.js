@@ -7,10 +7,8 @@ module.exports.getProducts = (req, res, next) => {
     try {
         let filter = {};
         if (req.query.categories) {
-            console.log(req.query.categories)
             filter = {categoryId: req.query.categories.split(',')}
         }
-        console.log(filter)
         Product.find(filter).then(products => {
             if (!products || products.length < 1) {
                 return res.status(404).json({
