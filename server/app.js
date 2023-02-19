@@ -38,9 +38,14 @@ app.use((err, req, res, next) => {
             success: false,
             message: err.error.description,
         });
-    } else {
-        return res.status(401).send(err);
     }
+    if (err.name === 'CastError' && err.kind === 'ObjectId') {
+        return res.status(500).json({
+            success: false,
+            message: 'Invalid Id'
+        })
+    }
+        return res.status(503).send(err);
 });
 
 app.listen(port, () => {

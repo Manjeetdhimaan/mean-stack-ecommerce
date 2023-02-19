@@ -7,12 +7,11 @@ const categorySchema = new mongoose.Schema({
     },
     color: {
         type: String,
-        required: [true, 'Category color is required']
+        default: '#333'
     },
     icon: {
-        type: Number,
-        required: [true, 'Category icon is required']
-    },
+        type: String
+    }
 }, {
     timestamps: true
 });
