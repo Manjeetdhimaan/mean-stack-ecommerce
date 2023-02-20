@@ -167,3 +167,76 @@ module.exports.updateUser = async (req, res, next) => {
         return next(err);
     }
 };
+
+module.exports.authenticateUser = (req, res, next) => {
+    try {
+        User.findOne({email: req.body.email}).then((user) => {
+            if (!user) {
+                return res.status(404).send({
+                    success: false,
+                    message: 'No account found with this email address!'
+                });
+            }
+            else if(!user.verifyPassword(req.body.password)) {
+                return res.status(401).send({
+                    success: false,
+                    message: 'Incorrect password'
+                });
+            }
+            return res.status(200).send({
+                success: true,
+                message: 'User fetched succussfully!',
+                _id: user['_id'],
+                name: user['name'],
+                token: user.generateJwt(req.body.remeberMe)
+            });
+        }).catch(err => {
+            return next(err);
+        })
+    } catch (err) {
+        return next(err);
+    }
+};
+
+module.exports.getUserCount = (req, res, next) => {
+    try {
+        User.countDocuments().then(userCount => {
+            if (!userCount || userCount.length < 1) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'No Users found.'
+                });
+            } else {
+                return res.status(200).json({
+                    success: true,
+                    userCount: userCount
+                });
+            }
+        }).catch(err => {
+            return next(err);
+        })
+    } catch (err) {
+        return next(err);
+    }
+};
+
+module.exports.deleteUser = (req, res, next) => {
+    try {
+        User.findByIdAndRemove(req.params.id).then((user) => {
+            if (!user) {
+                return res.status(404).send({
+                    success: false,
+                    message: 'User not found!'
+                });
+            }
+            return res.status(201).send({
+                success: true,
+                message: 'User account deleted succussfully!'
+            });
+        }).catch(err => {
+            return next(err);
+        })
+    } catch (err) {
+        return next(err);
+    }
+};

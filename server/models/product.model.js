@@ -8,7 +8,7 @@ const productSchema = new mongoose.Schema({
     },
     description: {
         type: String,
-        required: [true, 'Product description is required']
+        // required: [true, 'Product description is required']
     },
     richDescription: {
         type: String,
@@ -27,7 +27,7 @@ const productSchema = new mongoose.Schema({
     },
     price: {
         type: Number,
-        required: [true, 'Product price is required']
+        // required: [true, 'Product price is required']
     },
     currency: {
         type: String,
@@ -35,12 +35,12 @@ const productSchema = new mongoose.Schema({
     },
     categoryId: {
         type: Schema.Types.ObjectId,
-        required: [true, 'Product category is required'],
+        // required: [true, 'Product category is required'],
         ref: 'Category'
     },
     countInStock: {
         type: Number,
-        required: [true, 'Product stock quantity is required'],
+        // required: [true, 'Product stock quantity is required'],
         min: 0,
         max: 2555
     },

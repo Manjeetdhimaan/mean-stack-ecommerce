@@ -13,12 +13,13 @@ const userRoutes = require('./routes/user.routes');
 
 const port = process.env.PORT || devEnv.PORT;
 const api = process.env.API_URL || devEnv.API_URL;
-
+// const authJwt = require('./middlewares/jwt-auth');
 const app = express();
 app.use(cors());
 
 // Middelwares
 app.use(bodyParser.json());
+// app.use(authJwt());
 
 // Routes
 app.use(`${api}/products`, productRoutes);
@@ -28,6 +29,7 @@ app.use(`${api}/users`, userRoutes);
 
 // Error handler
 app.use((err, req, res, next) => {
+    console.log(err);
     if (err.name === 'ValidationError') {
         const valErrors = [];
         Object.keys(err.errors).forEach(key => valErrors.push(err.errors[key].message));
@@ -45,7 +47,13 @@ app.use((err, req, res, next) => {
             message: 'Invalid Id'
         })
     }
-        return res.status(503).send(err);
+    if (err.name === 'UnauthorizedError') {
+        return res.status(401).json({
+            success: false,
+            message: 'Invalid Token'
+        })
+    }
+    return res.status(503).send(err);
 });
 
 app.listen(port, () => {

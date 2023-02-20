@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const devEnv = require('../dev-env/dev-env');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -46,7 +48,7 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 });
 
-userSchema.virtual('id').get(function() {
+userSchema.virtual('id').get(function () {
     return this._id.toHexString();
 });
 
@@ -72,7 +74,17 @@ userSchema.statics.hashPassword = function hashPassword(password) {
 }
 
 userSchema.methods.verifyPassword = function (password) {
-    return bcrypt.compareSync(password, this.password);
+    return bcrypt.compareSync(password, this.passwordHash);
 };
+
+userSchema.methods.generateJwt = function (remeberMe) {
+    return jwt.sign({
+            _id: this._id,
+            isAdmin: this.isAdmin
+        },
+        process.env.JWT_SECRET, {
+            expiresIn: remeberMe ? '365d' : process.env.JWT_EXP
+        });
+}
 
 mongoose.model('User', userSchema);
