@@ -7,7 +7,7 @@ module.exports.getProducts = (req, res, next) => {
     try {
         let filter = {};
         if (req.query.categories) {
-            filter = {categoryId: req.query.categories.split(',')}
+            filter = {category: req.query.categories.split(',')}
         }
         Product.find(filter).then(products => {
             if (!products || products.length < 1) {
@@ -32,7 +32,7 @@ module.exports.getProducts = (req, res, next) => {
 
 module.exports.getProduct = (req, res, next) => {
     try {
-        Product.findById(req.params.id).populate('categoryId').then((product) => {
+        Product.findById(req.params.id).populate('category').then((product) => {
             if (!product) {
                 return res.status(404).send({
                     success: false,
@@ -54,7 +54,7 @@ module.exports.getProduct = (req, res, next) => {
 
 module.exports.postProduct = async (req, res, next) => {
     try {
-        const category = await Category.findById(req.body.categoryId);
+        const category = await Category.findById(req.body.category);
         if (!category) {
             return res.status(404).json({
                 success: false,
@@ -71,7 +71,7 @@ module.exports.postProduct = async (req, res, next) => {
             brand: req.body.brand,
             price: req.body.price,
             currency: req.body.currency,
-            categoryId: req.body.categoryId,
+            category: req.body.category,
             countInStock: req.body.countInStock,
             rating: req.body.rating,
             numReviews: req.body.numReviews,
@@ -100,7 +100,7 @@ module.exports.postProduct = async (req, res, next) => {
 
 module.exports.updateProduct = async (req, res, next) => {
     try {
-        const category = await Category.findById(req.body.categoryId);
+        const category = await Category.findById(req.body.category);
         if (!category) {
             return res.status(404).json({
                 success: false,
@@ -139,8 +139,8 @@ module.exports.updateProduct = async (req, res, next) => {
                 if (req.body.currency) {
                     founededProduct.currency = req.body.currency;
                 }
-                if (req.body.categoryId) {
-                    founededProduct.categoryId = req.body.categoryId;
+                if (req.body.category) {
+                    founededProduct.category = req.body.category;
                 }
                 if (req.body.countInStock) {
                     founededProduct.countInStock = req.body.countInStock;

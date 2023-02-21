@@ -33,7 +33,7 @@ const productSchema = new mongoose.Schema({
         type: String,
         default: "INR"
     },
-    categoryId: {
+    category: {
         type: Schema.Types.ObjectId,
         // required: [true, 'Product category is required'],
         ref: 'Category'

@@ -4,7 +4,7 @@ const orderSchema = new mongoose.Schema({
     orderItems: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'OrderItem',
-        required: [true, 'Order Item is required']
+        required: [true, 'Order Items are required']
     }],
     address: {
         type: Object,
@@ -40,9 +40,10 @@ const orderSchema = new mongoose.Schema({
     totolPrice: {
         type: Number
     },
-    userId: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        required: [true, 'Order owner is required']
     },
     dateOrdered: {
         type: Date,
