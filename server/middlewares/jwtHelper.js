@@ -52,7 +52,7 @@ module.exports.isAdmin =  (req, res, next) => {
            }
             else if ( !user.isAdmin ){
                 return res.status(401).send({
-                    message: 'Not Authenticated.'
+                    message: 'Not Authorized.'
                 });
             }
             else{

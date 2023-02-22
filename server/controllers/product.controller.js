@@ -60,13 +60,18 @@ module.exports.postProduct = async (req, res, next) => {
                 success: false,
                 message: 'Invalid category'
             })
-        }
+        };
+        const file = req.file;
+        if(!file) res.status(400).send({success: false, message: 'Product image is required'});
+
+        const fileName = req.file.filename;
+        const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`
 
         const product = new Product({
             name: req.body.name,
             description: req.body.description,
             richDescription: req.body.richDescription,
-            image: req.body.image,
+            image: basePath+fileName,
             images: req.body.images,
             brand: req.body.brand,
             price: req.body.price,
