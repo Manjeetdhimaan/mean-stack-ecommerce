@@ -26,7 +26,35 @@ module.exports.getOrders = (req, res, next) => {
     } catch (err) {
         return next(err);
     }
-}
+};
+
+module.exports.getUserOrders = (req, res, next) => {
+    try {
+        Order.find({user: req._id}).populate({
+            path: 'orderItems', populate: { 
+            path: 'product', populate: 'category'
+          }
+        }).sort({
+            'dateOrdered': -1
+        }).then(userOrders => {
+            if (!userOrders || userOrders.length < 1) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'No orders found.'
+                });
+            } else {
+                return res.status(200).json({
+                    success: true,
+                    orders: userOrders
+                });
+            }
+        }).catch(err => {
+            return next(err);
+        })
+    } catch (err) {
+        return next(err);
+    }
+};
 
 module.exports.getOrder = (req, res, next) => {
     try {
@@ -55,7 +83,7 @@ module.exports.getOrder = (req, res, next) => {
     } catch (err) {
         return next(err);
     }
-}
+};
 
 module.exports.postOrder = async (req, res, next) => {
     try {
@@ -77,10 +105,28 @@ module.exports.postOrder = async (req, res, next) => {
             }).catch(err => {
                 return next(err);
             });
-
         }));
 
         const orderItemIdsResolved = await orderItemIds;
+
+        const totalPrices = await Promise.all(orderItemIdsResolved.map(async orderItemId => {
+            const orderItem = await OrderItem.findById(orderItemId).populate('product', 'price currency');
+            const totalPrice = orderItem.product.price * orderItem.quantity;
+            // const currency = orderItem.product.currency
+            return totalPrice;
+        }));
+        
+
+        // const totalPrice = totalPrices.map(resObj => {
+        //     const totalPr =+ resObj.totalPrice
+        //     return totalPr;
+        // })
+        // const finalTotalPrice = totalPrice.reduce((a, b) => a + b, 0);
+        // const currency = totalPrices.map(resObj => {
+        //     return resObj.currency;
+        // });
+
+        const totalPrice = totalPrices.reduce((a, b) => a + b, 0);
 
         const order = new Order({
             orderItems: orderItemIdsResolved,
@@ -93,8 +139,8 @@ module.exports.postOrder = async (req, res, next) => {
                 phone: req.body.phone
             },
             status: req.body.status,
-            totolPrice: req.body.totolPrice,
-            user: req.body.user
+            totolPrice: totalPrice,
+            user: req._id
         });
 
         order.save().then((savedOrder) => {
@@ -117,6 +163,64 @@ module.exports.postOrder = async (req, res, next) => {
     }
 };
 
+module.exports.updateOrderStatus = (req, res, next) => {
+    try {
+        Order.findByIdAndUpdate(req.params.id).then((founededOrder) => {
+            if (!founededOrder) {
+                return res.status(404).send({
+                    success: false,
+                    message: 'Category not found!'
+                });
+            } else {
+                    founededOrder.status = req.body.status;
+            };
+
+            founededOrder.save().then((savedOrder) => {
+                if (!savedOrder) {
+                    return res.status(503).send({
+                        success: false,
+                        message: 'Order status can not be updated! Please try again.'
+                    });
+                }
+                return res.status(201).send({
+                    success: true,
+                    message: 'Order status updated!',
+                    order: savedOrder
+                });
+            }).catch(err => {
+                return next(err);
+            })
+        }).catch(err => {
+            return next(err);
+        })
+    } catch (err) {
+        return next(err);
+    }
+};
+
+module.exports.deleteOrder = (req, res, next) => {
+    try {
+        Order.findByIdAndRemove(req.params.id).then(async order => {
+            if (!order) {
+                return res.status(404).send({
+                    success: false,
+                    message: 'Order not found!'
+                });
+            };
+            await order.orderItems.map(async orderItem => {
+                await OrderItem.findByIdAndRemove(orderItem);
+            });
+            return res.status(201).send({
+                success: true,
+                message: 'Order deleted succussfully!'
+            });
+        }).catch(err => {
+            return next(err);
+        });
+    } catch (err) {
+        return next(err);
+    };
+};
 
 
 // order example 

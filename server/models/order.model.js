@@ -45,6 +45,9 @@ const orderSchema = new mongoose.Schema({
         ref: 'User',
         required: [true, 'Order owner is required']
     },
+    currency: {
+        type: String
+    },
     dateOrdered: {
         type: Date,
         default: Date.now
