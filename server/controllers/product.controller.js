@@ -65,7 +65,7 @@ module.exports.postProduct = async (req, res, next) => {
         if(!file) res.status(400).send({success: false, message: 'Product image is required'});
 
         const fileName = req.file.filename;
-        const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`
+        const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
 
         const product = new Product({
             name: req.body.name,
@@ -105,6 +105,12 @@ module.exports.postProduct = async (req, res, next) => {
 
 module.exports.updateProduct = async (req, res, next) => {
     try {
+        if (!mongoose.isValidObjectId(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid Product Id'
+            })
+        }
         const category = await Category.findById(req.body.category);
         if (!category) {
             return res.status(404).json({
@@ -119,6 +125,12 @@ module.exports.updateProduct = async (req, res, next) => {
                     message: 'Product not found!'
                 });
             } else {
+                let imagePath;
+                if (req.file) {
+                    const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
+                    imagePath = basePath + req.filename;
+                }
+
                 founededProduct.isFeatured = req.body.isFeatured;
                 if (req.body.name) {
                     founededProduct.name = req.body.name;
@@ -129,8 +141,8 @@ module.exports.updateProduct = async (req, res, next) => {
                 if (req.body.richDescription) {
                     founededProduct.richDescription = req.body.richDescription;
                 }
-                if (req.body.image) {
-                    founededProduct.image = req.body.image;
+                if (imagePath) {
+                    founededProduct.image = imagePath;
                 }
                 if (req.body.images) {
                     founededProduct.images = req.body.images;
@@ -158,6 +170,53 @@ module.exports.updateProduct = async (req, res, next) => {
                 }
             };
 
+            founededProduct.save().then((savedProduct) => {
+                if (!savedProduct) {
+                    return res.status(503).send({
+                        success: false,
+                        message: 'Product can not be updated! Please try again.'
+                    });
+                }
+                return res.status(201).send({
+                    success: true,
+                    message: 'Product updated succussfully!',
+                    product: savedProduct
+                });
+            }).catch(err => {
+                return next(err);
+            })
+        }).catch(err => {
+            return next(err);
+        })
+    } catch (err) {
+        return next(err);
+    }
+};
+
+module.exports.updateProductGallery = async (req, res, next) => {
+    try {
+        if (!mongoose.isValidObjectId(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid Product Id'
+            })
+        }
+        Product.findByIdAndUpdate(req.params.id).then((founededProduct) => {
+            if (!founededProduct) {
+                return res.status(404).send({
+                    success: false,
+                    message: 'Product not found!'
+                });
+            } else {
+                let imagePaths = [];
+                const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`
+                if (req.files) {
+                    req.files.map(file => {
+                        imagePaths.push(basePath + file.filename);
+                    })
+                }
+                    founededProduct.images = imagePaths;
+            };
             founededProduct.save().then((savedProduct) => {
                 if (!savedProduct) {
                     return res.status(503).send({
