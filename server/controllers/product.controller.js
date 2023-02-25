@@ -101,7 +101,7 @@ module.exports.postProduct = async (req, res, next) => {
     } catch (err) {
         return next(err);
     }
-}
+};
 
 module.exports.updateProduct = async (req, res, next) => {
     try {
