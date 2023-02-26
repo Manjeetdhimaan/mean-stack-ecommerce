@@ -1,10 +1,10 @@
-@import url('~primeicons/primeicons.css');
-@import url('~primeng/resources/themes/saga-blue/theme.css');
-@import url('~primeng/resources/primeng.min.css');
-@import url('~primeflex/primeflex.css');
+@import '~primeicons/primeicons.css';
+@import '~primeng/resources/themes/saga-blue/theme.css';
+@import '~primeng/resources/primeng.min.css';
+@import '~primeflex/primeflex.css';
 
-
-@import url(./base/fonts.scss);
-@import url(./base/colors.scss);
-@import url(./base/mixins.scss);
-@import url(./base/config.scss);
+@import './apps/ngshop/ngshop.scss';
+@import './base/fonts.scss';
+@import './base/colors.scss';
+@import './base/mixins.scss';
+@import './base/config.scss';

@@ -1,3 +1,16 @@
-@import url(./base/fonts.scss);
-@import url(./base/colors.scss);
-@import url(./base/config.scss);
+@import '~normalize.css/normalize.css';
+
+@import '~primeicons/primeicons.css';
+@import '~primeng/resources/themes/saga-blue/theme.css';
+@import '~primeng/resources/primeng.min.css';
+@import '~primeflex/primeflex.css';
+
+@import './base/fonts.scss';
+@import './base/colors.scss';
+@import './base/mixins.scss';
+@import './base/config.scss';
+@import './apps/admin/shell.scss';
+
+a {
+  cursor: pointer;
+}
