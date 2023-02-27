@@ -10,6 +10,11 @@ export interface CategoryResponse {
   categories: Category[]
 }
 
+export interface SuccessResponse {
+  success: boolean,
+  message: string
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -19,5 +24,13 @@ export class CategoriesService {
 
   getCategories():Observable<CategoryResponse> {
     return this.http.get<CategoryResponse>(`${environment.apiBaseUrl}/categories/get-categories`);
+  }
+
+  postCategory(categoryBody: Category):Observable<SuccessResponse> {
+    return this.http.post<SuccessResponse>(`${environment.apiBaseUrl}/categories/post-category`, categoryBody);
+  }
+
+  deleteCategory(categoryId: string):Observable<SuccessResponse> {
+    return this.http.delete<SuccessResponse>(`${environment.apiBaseUrl}/categories/delete-category/${categoryId}`);
   }
 }
