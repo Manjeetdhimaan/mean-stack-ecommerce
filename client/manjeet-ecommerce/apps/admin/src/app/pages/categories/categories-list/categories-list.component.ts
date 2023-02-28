@@ -5,7 +5,7 @@ import {
   CategoriesService,
   Category,
   CategoriesResponse,
-  SuccessResponse,
+  ServerResponse,
 } from '@manjeet-ecommerce/products';
 import {
   ConfirmationService,
@@ -41,7 +41,7 @@ export class CategoriesListComponent implements OnInit {
       (err) => {
         this.isLoading = false;
         this.isError = true;
-        if (err.error) {
+        if (err.error['message']) {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
@@ -60,6 +60,7 @@ export class CategoriesListComponent implements OnInit {
   }
 
   onDeleteCategory(categoryId: string, category: Category) {
+    this.isError = false;
     this.confirmationService.confirm({
       message: 'Are you sure to delete catergry ' + category.name + '?',
       header: 'Delete Category ' + category.name + '?',
@@ -67,7 +68,7 @@ export class CategoriesListComponent implements OnInit {
       accept: () => {
         this.isLoadingDelete = true;
         this.categoryService.deleteCategory(categoryId).subscribe(
-          (res: SuccessResponse) => {
+          (res: ServerResponse) => {
             this.isLoadingDelete = false;
             this.isError = false;
             if (res.success) {
@@ -85,7 +86,7 @@ export class CategoriesListComponent implements OnInit {
           (err) => {
             this.isLoadingDelete = false;
             this.isError = true;
-            if (err.error) {
+            if (err.error['message']) {
               this.messageService.add({
                 severity: 'error',
                 summary: 'Error',

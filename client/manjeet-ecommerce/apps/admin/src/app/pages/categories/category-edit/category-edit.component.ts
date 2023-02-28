@@ -43,6 +43,7 @@ export class CategoryEditComponent implements OnInit {
     this.form = this.fb.group({
       name: new FormControl('', [Validators.required]),
       icon: new FormControl('', [Validators.required]),
+      color: new FormControl('#333'),
     });
     this.activatedRoute.params.subscribe((param: Params) => {
       if(param['id']){
@@ -63,6 +64,7 @@ export class CategoryEditComponent implements OnInit {
 
   onSubmitForm() {
     this.submit = true;
+    this.isError = false;
     if (!this.form.valid) {
       return;
     }
@@ -83,7 +85,7 @@ export class CategoryEditComponent implements OnInit {
         (err) => {
           this.isLoading = false;
           this.isError = true;
-          if (err.error) {
+          if (err.error['message']) {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
@@ -115,7 +117,7 @@ export class CategoryEditComponent implements OnInit {
         (err) => {
           this.isLoading = false;
           this.isError = true;
-          if (err.error) {
+          if (err.error['message']) {
             this.messageService.add({
               severity: 'error',
               summary: 'Error',
@@ -139,14 +141,15 @@ export class CategoryEditComponent implements OnInit {
     this.categoryService.getCategory(categoryId).subscribe((res: CategoryResponse) => {
       this.form.patchValue({
         name: res.category.name,
-        icon: res.category.icon
+        icon: res.category.icon,
+        color: res.category.color
       });
       this.isLoading = false;
         this.isError = false;
     }, err => {
       this.isLoading = false;
         this.isError = true;
-        if (err.error) {
+        if (err.error['message']) {
           this.messageService.add({
             severity: 'error',
             summary: 'Error',

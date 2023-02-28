@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { CardModule } from 'primeng/card';
 import { RippleModule } from 'primeng/ripple';
@@ -13,16 +14,16 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { MessageService } from 'primeng/api';
+import { ColorPickerModule } from 'primeng/colorpicker';
 
 import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ShellComponent } from './shared/shell/shell.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
-import { CategoriesListComponent } from './categories/categories-list/categories-list.component';
-import { CategoryEditComponent } from './categories/category-edit/category-edit.component';
-import { ReactiveFormsModule } from '@angular/forms';
-import { MessageService } from 'primeng/api';
+import { CategoriesListComponent } from './pages/categories/categories-list/categories-list.component';
+import { CategoryEditComponent } from './pages/categories/category-edit/category-edit.component';
 
 const UXMODULE = [
   CardModule,
@@ -32,7 +33,8 @@ const UXMODULE = [
   TableModule,
   InputTextModule,
   ToastModule,
-  ConfirmDialogModule
+  ConfirmDialogModule,
+  ColorPickerModule
 ];
 
 @NgModule({
@@ -51,8 +53,9 @@ const UXMODULE = [
     ...UXMODULE,
     HttpClientModule,
     ReactiveFormsModule,
+    FormsModule
   ],
   providers: [MessageService, ConfirmationService],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule { }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { environment } from '../../../../../environments/environment'
+import { environment } from '@env/environment'
 import { Category } from '../models/category.model';
 
 export interface CategoriesResponse {
@@ -17,7 +17,7 @@ export interface CategoryResponse {
   category: Category;
 }
 
-export interface SuccessResponse {
+export interface ServerResponse {
   success: boolean,
   message: string
 }
@@ -27,25 +27,27 @@ export interface SuccessResponse {
 })
 export class CategoriesService {
 
+  categoryBaseUrl = `${environment.apiBaseUrl}/categories`
+
   constructor(private http: HttpClient) { }
 
   getCategories():Observable<CategoriesResponse> {
-    return this.http.get<CategoriesResponse>(`${environment.apiBaseUrl}/categories/get-categories`);
+    return this.http.get<CategoriesResponse>(`${this.categoryBaseUrl}/get-categories`);
   }
 
   getCategory(categoryId: string):Observable<CategoryResponse> {
-    return this.http.get<CategoryResponse>(`${environment.apiBaseUrl}/categories/get-category/${categoryId}`);
+    return this.http.get<CategoryResponse>(`${this.categoryBaseUrl}/get-category/${categoryId}`);
   }
 
-  postCategory(categoryBody: Category):Observable<SuccessResponse> {
-    return this.http.post<SuccessResponse>(`${environment.apiBaseUrl}/categories/post-category`, categoryBody);
+  postCategory(categoryBody: Category):Observable<ServerResponse> {
+    return this.http.post<ServerResponse>(`${this.categoryBaseUrl}/post-category`, categoryBody);
   }
 
-  updateCategory(categoryId: string, categoryBody: Category):Observable<SuccessResponse> {
-    return this.http.put<SuccessResponse>(`${environment.apiBaseUrl}/categories/update-category/${categoryId}`, categoryBody);
+  updateCategory(categoryId: string, categoryBody: Category):Observable<ServerResponse> {
+    return this.http.put<ServerResponse>(`${this.categoryBaseUrl}/update-category/${categoryId}`, categoryBody);
   }
 
-  deleteCategory(categoryId: string):Observable<SuccessResponse> {
-    return this.http.delete<SuccessResponse>(`${environment.apiBaseUrl}/categories/delete-category/${categoryId}`);
+  deleteCategory(categoryId: string):Observable<ServerResponse> {
+    return this.http.delete<ServerResponse>(`${this.categoryBaseUrl}/delete-category/${categoryId}`);
   }
 }

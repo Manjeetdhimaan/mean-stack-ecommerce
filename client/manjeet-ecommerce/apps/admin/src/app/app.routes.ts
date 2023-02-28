@@ -1,6 +1,6 @@
 import { Route } from '@angular/router';
-import { CategoriesListComponent } from './categories/categories-list/categories-list.component';
-import { CategoryEditComponent } from './categories/category-edit/category-edit.component';
+import { CategoriesListComponent } from './pages/categories/categories-list/categories-list.component';
+import { CategoryEditComponent } from './pages/categories/category-edit/category-edit.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ShellComponent } from './shared/shell/shell.component';
 

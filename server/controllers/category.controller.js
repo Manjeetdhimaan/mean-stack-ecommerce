@@ -41,7 +41,7 @@ module.exports.postCategory = (req, res, next) => {
             }
             return res.status(201).send({
                 success: true,
-                message: 'Category added succussfully!'
+                message: 'Category ' + savedCategory.name + ' added succussfully!'
             });
         }).catch(err => {
             return next(err);
