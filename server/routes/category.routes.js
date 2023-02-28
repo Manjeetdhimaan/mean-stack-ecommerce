@@ -7,7 +7,7 @@ const jwtHelper = require('../middlewares/jwtHelper');
 router.get('/get-categories', ctrlCategory.getCategories);
 router.get('/get-category/:id', ctrlCategory.getCategory);
 router.post('/post-category', ctrlCategory.postCategory);
-router.delete('/delete-category/:id', ctrlCategory.deleteCategory);
+router.delete('/delete-category/:id', jwtHelper.verifyJwtToken, jwtHelper.isAdmin, ctrlCategory.deleteCategory);
 router.put('/update-category/:id', ctrlCategory.updateCategory);
 
 module.exports = router;

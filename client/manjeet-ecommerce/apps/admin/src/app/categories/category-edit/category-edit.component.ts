@@ -10,7 +10,7 @@ import {
 
 import { MessageService } from 'primeng/api';
 
-import { CategoriesService } from '@manjeet-ecommerce/products';
+import { CategoriesService, CategoryResponse } from '@manjeet-ecommerce/products';
 import { ActivatedRoute, Params } from '@angular/router';
 
 export interface SuccessResponse {
@@ -21,10 +21,11 @@ export interface SuccessResponse {
 @Component({
   selector: 'admin-category-edit',
   templateUrl: './category-edit.component.html',
-  styles: [],
+  styles: []
 })
 export class CategoryEditComponent implements OnInit {
   form: FormGroup;
+  categoryId: string;
   submit = false;
   isLoading = false;
   isError = false;
@@ -43,14 +44,15 @@ export class CategoryEditComponent implements OnInit {
       name: new FormControl('', [Validators.required]),
       icon: new FormControl('', [Validators.required]),
     });
-
     this.activatedRoute.params.subscribe((param: Params) => {
-      console.log(param);
       if(param['id']){
         this.editMode = true;
+        this.categoryId = param['id'];
+        this._onGetCategory(this.categoryId);
       }
       else {
-        this.editMode = false
+        this.editMode = false;
+        this.categoryId = '';
       }
     })
   }
@@ -65,30 +67,98 @@ export class CategoryEditComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    this.categoryService.postCategory(this.form.value).subscribe(
-      (res: SuccessResponse) => {
-        this.isLoading = false;
+    if(this.editMode) {
+      this.categoryService.updateCategory(this.categoryId, this.form.value).subscribe(
+        (res: SuccessResponse) => {
+          this.isLoading = false;
+          this.isError = false;
+          if (res.success) {
+            this.messageService.add({severity:'success', summary:'Success', detail: res['message']});
+            // this.router.navigate(['/categories']);
+            timer(1000).toPromise().then(() => {
+              this.location.back();
+            })
+          }
+        },
+        (err) => {
+          this.isLoading = false;
+          this.isError = true;
+          if (err.error) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err.error['message'],
+            });
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'An error occured',
+              detail: 'Please try again!',
+            });
+          }
+        }
+      );
+    }
+    else {
+      this.categoryService.postCategory(this.form.value).subscribe(
+        (res: SuccessResponse) => {
+          this.isLoading = false;
+          this.isError = false;
+          if (res.success) {
+            this.messageService.add({severity:'success', summary:'Success', detail: res['message']});
+            // this.router.navigate(['/categories']);
+            timer(1000).toPromise().then(() => {
+              this.location.back();
+            })
+          }
+        },
+        (err) => {
+          this.isLoading = false;
+          this.isError = true;
+          if (err.error) {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err.error['message'],
+            });
+
+          } else {
+            this.messageService.add({
+              severity: 'error',
+              summary: 'An error occured',
+              detail: 'Please try again!',
+            });
+          }
+        }
+      );
+    }
+  }
+
+  _onGetCategory(categoryId: string) {
+    this.isLoading = true;
+    this.categoryService.getCategory(categoryId).subscribe((res: CategoryResponse) => {
+      this.form.patchValue({
+        name: res.category.name,
+        icon: res.category.icon
+      });
+      this.isLoading = false;
         this.isError = false;
-        if (res.success) {
-          this.messageService.add({severity:'success', summary:'Success', detail: res['message']});
-          // this.router.navigate(['/categories']);
-          timer(1000).toPromise().then(() => {
-            this.location.back();
-          })
-        }
-      },
-      (err) => {
-        this.isLoading = false;
+    }, err => {
+      this.isLoading = false;
         this.isError = true;
-        if(err.name==="HttpErrorResponse") {
-          this.messageService.add({severity:'error', summary:'An error occured', detail: 'Please try again!'});
+        if (err.error) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.error['message'],
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'An error occured',
+            detail: 'Please try again!',
+          });
         }
-        else {
-          this.messageService.add({severity:'error', summary:'Error', detail: err['message']});
-        }
-        console.log(err);
-      }
-    );
-    console.log(this.form.value);
+    });
   }
 }

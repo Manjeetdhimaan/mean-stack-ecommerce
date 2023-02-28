@@ -4,12 +4,11 @@ import { Router } from '@angular/router';
 import {
   CategoriesService,
   Category,
-  CategoryResponse,
+  CategoriesResponse,
   SuccessResponse,
 } from '@manjeet-ecommerce/products';
 import {
   ConfirmationService,
-  ConfirmEventType,
   MessageService,
 } from 'primeng/api';
 
@@ -34,15 +33,28 @@ export class CategoriesListComponent implements OnInit {
   ngOnInit(): void {
     this.isLoading = true;
     this.categoryService.getCategories().subscribe(
-      (res: CategoryResponse) => {
+      (res: CategoriesResponse) => {
         this.categories = res['categories'];
         this.isLoading = false;
         this.isError = false;
       },
       (err) => {
-        console.log(err);
         this.isLoading = false;
         this.isError = true;
+        if (err.error) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: err.error['message'],
+          });
+
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'An error occured',
+            detail: 'Please try again!',
+          });
+        }
       }
     );
   }
@@ -64,27 +76,27 @@ export class CategoriesListComponent implements OnInit {
                 summary: 'Success',
                 detail: res['message'],
               });
-              const categories = this.categories.splice(
+              this.categories.splice(
                 this.categories.indexOf(category),
                 1
               );
-              console.log(categories);
             }
           },
           (err) => {
             this.isLoadingDelete = false;
             this.isError = true;
-            if (err.name === 'HttpErrorResponse') {
+            if (err.error) {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail: err.error['message'],
+              });
+
+            } else {
               this.messageService.add({
                 severity: 'error',
                 summary: 'An error occured',
                 detail: 'Please try again!',
-              });
-            } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: err['message'],
               });
             }
           }
