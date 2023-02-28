@@ -41,20 +41,7 @@ export class CategoriesListComponent implements OnInit {
       (err) => {
         this.isLoading = false;
         this.isError = true;
-        if (err.error['message']) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.error['message'],
-          });
-
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'An error occured',
-            detail: 'Please try again!',
-          });
-        }
+        this._errorHandler(err);
       }
     );
   }
@@ -86,20 +73,7 @@ export class CategoriesListComponent implements OnInit {
           (err) => {
             this.isLoadingDelete = false;
             this.isError = true;
-            if (err.error['message']) {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: err.error['message'],
-              });
-
-            } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'An error occured',
-                detail: 'Please try again!',
-              });
-            }
+            this._errorHandler(err);
           }
         );
       },
@@ -108,5 +82,22 @@ export class CategoriesListComponent implements OnInit {
 
   onUpdateCategory(categoryId: string) {
     this.router.navigate(['/categories/edit/'+categoryId]);
+  }
+
+  _errorHandler(err: any) {
+    if (err.error['message']) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: err.error['message'],
+      });
+
+    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'An error occured',
+        detail: 'Please try again!',
+      });
+    }
   }
 }

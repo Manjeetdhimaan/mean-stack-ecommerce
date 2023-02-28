@@ -49,7 +49,7 @@ export class CategoryEditComponent implements OnInit {
       if(param['id']){
         this.editMode = true;
         this.categoryId = param['id'];
-        this._onGetCategory(this.categoryId);
+        this._getCategory(this.categoryId);
       }
       else {
         this.editMode = false;
@@ -85,19 +85,7 @@ export class CategoryEditComponent implements OnInit {
         (err) => {
           this.isLoading = false;
           this.isError = true;
-          if (err.error['message']) {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: err.error['message'],
-            });
-          } else {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'An error occured',
-              detail: 'Please try again!',
-            });
-          }
+          this._errorHandler(err);
         }
       );
     }
@@ -117,26 +105,13 @@ export class CategoryEditComponent implements OnInit {
         (err) => {
           this.isLoading = false;
           this.isError = true;
-          if (err.error['message']) {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Error',
-              detail: err.error['message'],
-            });
-
-          } else {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'An error occured',
-              detail: 'Please try again!',
-            });
-          }
+          this._errorHandler(err);
         }
       );
     }
   }
 
-  _onGetCategory(categoryId: string) {
+  _getCategory(categoryId: string) {
     this.isLoading = true;
     this.categoryService.getCategory(categoryId).subscribe((res: CategoryResponse) => {
       this.form.patchValue({
@@ -149,19 +124,24 @@ export class CategoryEditComponent implements OnInit {
     }, err => {
       this.isLoading = false;
         this.isError = true;
-        if (err.error['message']) {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: err.error['message'],
-          });
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'An error occured',
-            detail: 'Please try again!',
-          });
-        }
+        this._errorHandler(err);
     });
+  }
+
+  _errorHandler(err: any) {
+    if (err.error['message']) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: err.error['message'],
+      });
+
+    } else {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'An error occured',
+        detail: 'Please try again!',
+      });
+    }
   }
 }

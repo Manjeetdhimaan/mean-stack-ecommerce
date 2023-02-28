@@ -9,7 +9,7 @@ module.exports.getProducts = (req, res, next) => {
         if (req.query.categories) {
             filter = {category: req.query.categories.split(',')}
         }
-        Product.find(filter).then(products => {
+        Product.find(filter).populate('category', 'name').then(products => {
             if (!products || products.length < 1) {
                 return res.status(404).json({
                     success: false,

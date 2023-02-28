@@ -24,6 +24,8 @@ import { ShellComponent } from './shared/shell/shell.component';
 import { SidebarComponent } from './shared/sidebar/sidebar.component';
 import { CategoriesListComponent } from './pages/categories/categories-list/categories-list.component';
 import { CategoryEditComponent } from './pages/categories/category-edit/category-edit.component';
+import { ProductsListComponent } from './pages/products/products-list/products-list.component';
+import { ProductsEditComponent } from './pages/products/products-edit/products-edit.component';
 
 const UXMODULE = [
   CardModule,
@@ -34,7 +36,7 @@ const UXMODULE = [
   InputTextModule,
   ToastModule,
   ConfirmDialogModule,
-  ColorPickerModule
+  ColorPickerModule,
 ];
 
 @NgModule({
@@ -45,6 +47,8 @@ const UXMODULE = [
     SidebarComponent,
     CategoriesListComponent,
     CategoryEditComponent,
+    ProductsListComponent,
+    ProductsEditComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,9 +57,9 @@ const UXMODULE = [
     ...UXMODULE,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
   ],
   providers: [MessageService, ConfirmationService],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

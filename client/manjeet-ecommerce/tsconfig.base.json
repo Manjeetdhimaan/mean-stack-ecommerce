@@ -15,11 +15,11 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@env/*": ["environments/*"],
       "@manjeet-ecommerce/orders": ["libs/orders/src/index.ts"],
       "@manjeet-ecommerce/products": ["libs/products/src/index.ts"],
       "@manjeet-ecommerce/ui": ["libs/ui/src/index.ts"],
-      "@manjeet-ecommerce/users": ["libs/users/src/index.ts"],
-      "@env/*": ["environments/*"]
+      "@manjeet-ecommerce/users": ["libs/users/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
