@@ -87,6 +87,10 @@
             cursor: pointer;
             transition: background-color 0.125s ease-in-out;
 
+            &.active{
+              background-color: var(--blue-700);
+            }
+
             &:hover,
             &:active {
               background-color: var(--blue-700);

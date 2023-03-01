@@ -21,6 +21,7 @@ export interface ProductResponse {
 @Injectable({
   providedIn: 'root'
 })
+
 export class ProductService {
 
   productBaseUrl = `${environment.apiBaseUrl}/products`
