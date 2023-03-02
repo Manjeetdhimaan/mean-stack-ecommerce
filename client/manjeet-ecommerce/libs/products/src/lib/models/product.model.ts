@@ -5,6 +5,7 @@ export class Product {
     public _id: string,
     public name: string,
     public richDescription: string,
+    public description: string,
     public image: string,
     public images: string[],
     public brand: string,

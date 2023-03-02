@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductService, ProductsResponse } from '@manjeet-ecommerce/products';
-import { Product } from '@manjeet-ecommerce/products';
+import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { Product } from '@manjeet-ecommerce/products';
+import { ProductService, ProductsResponse } from '@manjeet-ecommerce/products';
 
 @Component({
   selector: 'admin-products-list',
@@ -15,7 +16,7 @@ export class ProductsListComponent implements OnInit {
   isError = false;
   isLoadingDelete = false;
 
-  constructor(private productService: ProductService, private messageService: MessageService) {}
+  constructor(private productService: ProductService, private messageService: MessageService, private router: Router) {}
 
   ngOnInit(): void {
       this._getProducts();
@@ -38,6 +39,7 @@ export class ProductsListComponent implements OnInit {
   }
 
   onUpdateProduct(productId: string) {
+    this.router.navigate([`products/edit/${productId}`]);
   }
 
   _errorHandler(err: any) {

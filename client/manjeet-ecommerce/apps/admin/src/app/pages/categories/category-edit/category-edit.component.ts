@@ -10,7 +10,7 @@ import {
 
 import { MessageService } from 'primeng/api';
 
-import { CategoriesService, CategoryResponse } from '@manjeet-ecommerce/products';
+import { CategoriesService, Category, CategoryResponse } from '@manjeet-ecommerce/products';
 import { ActivatedRoute, Params } from '@angular/router';
 
 export interface SuccessResponse {
@@ -70,48 +70,56 @@ export class CategoryEditComponent implements OnInit {
     }
     this.isLoading = true;
     if(this.editMode) {
-      this.categoryService.updateCategory(this.categoryId, this.form.value).subscribe(
-        (res: SuccessResponse) => {
-          this.isLoading = false;
-          this.isError = false;
-          if (res.success) {
-            this.messageService.add({severity:'success', summary:'Success', detail: res['message']});
-            // this.router.navigate(['/categories']);
-            timer(1000).toPromise().then(() => {
-              this.location.back();
-            })
-          }
-        },
-        (err) => {
-          this.isLoading = false;
-          this.isError = true;
-          this._errorHandler(err);
-        }
-      );
+      this._updateCategory(this.form.value);
     }
     else {
-      this.categoryService.postCategory(this.form.value).subscribe(
-        (res: SuccessResponse) => {
-          this.isLoading = false;
-          this.isError = false;
-          if (res.success) {
-            this.messageService.add({severity:'success', summary:'Success', detail: res['message']});
-            // this.router.navigate(['/categories']);
-            timer(1000).toPromise().then(() => {
-              this.location.back();
-            })
-          }
-        },
-        (err) => {
-          this.isLoading = false;
-          this.isError = true;
-          this._errorHandler(err);
-        }
-      );
+      this._postCategory(this.form.value);
     }
   }
 
-  _getCategory(categoryId: string) {
+  private _updateCategory(category: Category) {
+    this.categoryService.updateCategory(this.categoryId, category).subscribe(
+      (res: SuccessResponse) => {
+        this.isLoading = false;
+        this.isError = false;
+        if (res.success) {
+          this.messageService.add({severity:'success', summary:'Success', detail: res['message']});
+          // this.router.navigate(['/categories']);
+          timer(1000).toPromise().then(() => {
+            this.location.back();
+          })
+        }
+      },
+      (err) => {
+        this.isLoading = false;
+        this.isError = true;
+        this._errorHandler(err);
+      }
+    );
+  }
+
+  private _postCategory(category: Category) {
+    this.categoryService.postCategory(category).subscribe(
+      (res: SuccessResponse) => {
+        this.isLoading = false;
+        this.isError = false;
+        if (res.success) {
+          this.messageService.add({severity:'success', summary:'Success', detail: res['message']});
+          // this.router.navigate(['/categories']);
+          timer(1000).toPromise().then(() => {
+            this.location.back();
+          })
+        }
+      },
+      (err) => {
+        this.isLoading = false;
+        this.isError = true;
+        this._errorHandler(err);
+      }
+    );
+  }
+
+  private _getCategory(categoryId: string) {
     this.isLoading = true;
     this.categoryService.getCategory(categoryId).subscribe((res: CategoryResponse) => {
       this.form.patchValue({
@@ -128,7 +136,7 @@ export class CategoryEditComponent implements OnInit {
     });
   }
 
-  _errorHandler(err: any) {
+  private _errorHandler(err: any) {
     if (err.error['message']) {
       this.messageService.add({
         severity: 'error',

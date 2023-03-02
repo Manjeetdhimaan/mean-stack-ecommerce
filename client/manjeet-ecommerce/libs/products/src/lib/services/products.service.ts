@@ -36,11 +36,11 @@ export class ProductService {
     return this.http.get<ProductResponse>(`${this.productBaseUrl}/get-product/${productId}`);
   }
 
-  postProduct(productBody: Product):Observable<ServerResponse> {
+  postProduct(productBody: FormData):Observable<ServerResponse> {
     return this.http.post<ServerResponse>(`${this.productBaseUrl}/post-product`, productBody);
   }
 
-  updateProduct(productId: string, productBody: Product):Observable<ServerResponse> {
+  updateProduct(productId: string, productBody: FormData):Observable<ServerResponse> {
     return this.http.put<ServerResponse>(`${this.productBaseUrl}/update-product/${productId}`, productBody);
   }
 

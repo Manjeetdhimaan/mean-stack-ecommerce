@@ -21,6 +21,7 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { DropdownModule } from 'primeng/dropdown';
 import { EditorModule } from 'primeng/editor';
+import { FileUploadModule } from 'primeng/fileupload';
 
 import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
@@ -46,7 +47,8 @@ const UXMODULE = [
   InputTextareaModule,
   InputSwitchModule,
   DropdownModule,
-  EditorModule
+  EditorModule,
+  FileUploadModule
 ];
 
 @NgModule({

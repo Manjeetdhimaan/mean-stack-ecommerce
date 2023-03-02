@@ -12,7 +12,7 @@
               <p-button [label]="editMode ? 'Update' : 'Create'" icon="pi
                 pi-plus"
                 styleClass="p-button-primary mr-2" type="submit"></p-button>
-              <p-button label="Cancel" icon="pi pi-arrow-circle-left"
+              <p-button label="Cancle" icon="pi pi-arrow-circle-left"
                 styleClass="p-button-secondary" routerLink="/products"></p-button>
             </div>
           </p-toolbar>
@@ -98,7 +98,24 @@
 
             <div class="field col-12">
               <label for="richDescription">Product Details</label>
-              <p-editor formControlName="richDescription" [style]="{'height':'320px'}" id="richDescription"></p-editor>
+              <p-editor formControlName="richDescription"
+                [style]="{'height':'320px'}" id="richDescription"></p-editor>
+            </div>
+
+            <div class="field col-12">
+              <label for="image">Main Image</label>
+              <input type="file" (change)="onImageSelect($event)" class="p-inputtext block w-full"
+                accept="image/*" id="image">
+              <!-- <p-fileUpload for="image"
+                accept="image/*" [maxFileSize]="1000000"></p-fileUpload> -->
+                <div *ngIf="imagePreview" class="col-3 mt-2 pl-0">
+                  <img [src]="imagePreview" alt="product image" width="100%" />
+                </div>
+                <small *ngIf="(f['image'].hasError('required') &&
+                f['image'].touched) ||
+                f['image'].hasError('required') &&
+                submitted"
+                class="p-error">Image is required</small>
             </div>
           </div>
         </div>
@@ -111,5 +128,3 @@
     </div>
   </p-card>
 </div>
-
-

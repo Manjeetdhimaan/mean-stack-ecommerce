@@ -84,7 +84,7 @@ export class CategoriesListComponent implements OnInit {
     this.router.navigate(['/categories/edit/'+categoryId]);
   }
 
-  _errorHandler(err: any) {
+  private _errorHandler(err: any) {
     if (err.error['message']) {
       this.messageService.add({
         severity: 'error',

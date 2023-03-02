@@ -20,7 +20,7 @@
 
     <div class="p-grid" *ngIf="!isLoading && !isError">
       <div class="p-col-12">
-        <p-table [value]="products" styleClass="p-datatable-gridlines">
+        <p-table [value]="products" styleClass="p-datatable-gridlines" [paginator]="true" [rows]="10" [showCurrentPageReport]="true">
           <ng-template pTemplate="header">
             <tr>
               <th pSortableColumn="name">Product Name <p-sortIcon field="name"></p-sortIcon></th>

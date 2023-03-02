@@ -66,7 +66,6 @@ module.exports.postProduct = async (req, res, next) => {
 
         const fileName = req.file.filename;
         const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
-
         const product = new Product({
             name: req.body.name,
             description: req.body.description,
@@ -128,7 +127,7 @@ module.exports.updateProduct = async (req, res, next) => {
                 let imagePath;
                 if (req.file) {
                     const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
-                    imagePath = basePath + req.filename;
+                    imagePath = basePath + req.file.filename;
                 }
 
                 founededProduct.isFeatured = req.body.isFeatured;
