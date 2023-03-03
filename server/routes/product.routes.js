@@ -12,6 +12,6 @@ router.get('/get-product/:id', ctrlProduct.getProduct);
 router.post('/post-product', extractFile.single('image'), ctrlProduct.postProduct);
 router.put('/update-product/:id', extractFile.single('image'), ctrlProduct.updateProduct);
 router.put('/update-product-gallery/:id', jwtHelper.verifyJwtToken, jwtHelper.isAdmin, extractFile.array('images', 20), ctrlProduct.updateProductGallery);
-router.delete('/delete-product/:id', jwtHelper.verifyJwtToken, jwtHelper.isAdmin, ctrlProduct.deleteProduct);
+router.delete('/delete-product/:id', ctrlProduct.deleteProduct);
 
 module.exports = router;

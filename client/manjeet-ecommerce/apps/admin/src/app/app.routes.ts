@@ -4,6 +4,8 @@ import { CategoryEditComponent } from './pages/categories/category-edit/category
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { ProductsEditComponent } from './pages/products/products-edit/products-edit.component';
 import { ProductsListComponent } from './pages/products/products-list/products-list.component';
+import { UserEditComponent } from './pages/users/user-edit/user-edit.component';
+import { UsersListComponent } from './pages/users/users-list/users-list.component';
 import { ShellComponent } from './shared/shell/shell.component';
 
 export const appRoutes: Route[] = [
@@ -30,6 +32,15 @@ export const appRoutes: Route[] = [
         },
         {
           path: 'products/edit/:id', component: ProductsEditComponent
+        },
+        {
+          path: 'users', component: UsersListComponent
+        },
+        {
+          path: 'users/new', component: UserEditComponent
+        },
+        {
+          path: 'users/edit/:id', component: UserEditComponent
         }
       ]
   }

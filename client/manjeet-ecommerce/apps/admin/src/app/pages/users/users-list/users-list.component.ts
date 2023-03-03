@@ -1,49 +1,62 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { ServerResponse } from '@manjeet-ecommerce/products';
+
+import { User, UserService, UsersResponse } from '@manjeet-ecommerce/users';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { Product, ServerResponse } from '@manjeet-ecommerce/products';
-import { ProductService, ProductsResponse } from '@manjeet-ecommerce/products';
 
 @Component({
-  selector: 'admin-products-list',
-  templateUrl: './products-list.component.html',
+  selector: 'admin-users-list',
+  templateUrl: './users-list.component.html',
   styles: [],
 })
-
-export class ProductsListComponent implements OnInit {
-  products:Product[] = [];
+export class UsersListComponent {
   isLoading = false;
   isError = false;
   isLoadingDelete = false;
+  users: User[];
 
-  constructor(private productService: ProductService, private messageService: MessageService, private router: Router, private confirmationService: ConfirmationService) {}
+  constructor(
+    private userService: UserService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-      this._getProducts();
+    this._getUsers();
   }
 
-  _getProducts() {
+  private _getUsers() {
     this.isLoading = true;
-    this.productService.getProducts().subscribe((res: ProductsResponse) => {
-      this.products = res['products'];
-      this.isLoading = false;
-      this.isError = false;
-    }, err => {
-      this.isLoading = false;
-      this.isError = true;
-      this._errorHandler(err);
-    })
+    this.userService.getUsers().subscribe(
+      (res: UsersResponse) => {
+        this.users = res['users'];
+        this.isLoading = false;
+        this.isError = false;
+      },
+      (err) => {
+        this.isLoading = false;
+        this.isError = true;
+        this._errorHandler(err);
+      }
+    );
   }
 
-  onDeleteProduct(productId: string, product:any) {
+  getCountryName(countryKey: string) {
+    if (countryKey) return this.userService.getCountry(countryKey);
+    return;
+  }
+
+  onDeleteUser(userId: string, user: User) {
     this.isError = false;
     this.confirmationService.confirm({
-      message: 'Are you sure to delete product ' + product.name + '?',
-      header: 'Delete Product ' + product.name + '?',
+      message: 'Are you sure to delete user ' + user.name + '?',
+      header: 'Delete user ' + user.name + '?',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.isLoadingDelete = true;
-        this.productService.deleteProduct(productId).subscribe(
+        this.userService.deleteUser(userId).subscribe(
           (res: ServerResponse) => {
             this.isLoadingDelete = false;
             this.isError = false;
@@ -53,8 +66,8 @@ export class ProductsListComponent implements OnInit {
                 summary: 'Success',
                 detail: res['message'],
               });
-              this.products.splice(
-                this.products.indexOf(product),
+              this.users.splice(
+                this.users.indexOf(user),
                 1
               );
             }
@@ -69,8 +82,8 @@ export class ProductsListComponent implements OnInit {
     });
   }
 
-  onUpdateProduct(productId: string) {
-    this.router.navigate([`products/edit/${productId}`]);
+  onUpdateUser(userId: string) {
+    this.router.navigate(['/users/edit/'+userId]);
   }
 
   private _errorHandler(err: any) {
@@ -80,6 +93,7 @@ export class ProductsListComponent implements OnInit {
         summary: 'Error',
         detail: err.error['message'],
       });
+
     } else {
       this.messageService.add({
         severity: 'error',

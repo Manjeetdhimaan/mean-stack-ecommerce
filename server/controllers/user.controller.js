@@ -65,6 +65,7 @@ module.exports.postUser = async (req, res, next) => {
             passwordHash: User.hashPassword(req.body.password),
             email: req.body.email,
             phone: req.body.phone,
+            isAdmin: req.body.isAdmin,
             address: {
                 street: req.body.street,
                 apartment: req.body.apartment,
@@ -74,12 +75,12 @@ module.exports.postUser = async (req, res, next) => {
             }
         });
 
-        if (req.body.password !== req.body.confirmPassword) {
-            return res.status(422).send({
-                success: false,
-                message: 'Passwords do not match'
-            });
-        }
+        // if (req.body.password !== req.body.confirmPassword) {
+        //     return res.status(422).send({
+        //         success: false,
+        //         message: 'Passwords do not match'
+        //     });
+        // }
 
         if (await userExists(req.body.email)) {
             return res.status(409).json({
@@ -122,6 +123,7 @@ module.exports.updateUser = async (req, res, next) => {
                     message: 'No account found with this email address!'
                 });
             } else {
+                founededUser.isAdmin = req.body.isAdmin;
                 if (req.body.name) {
                     founededUser.name = req.body.name;
                 }

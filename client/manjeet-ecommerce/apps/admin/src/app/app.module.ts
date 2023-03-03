@@ -22,6 +22,8 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { DropdownModule } from 'primeng/dropdown';
 import { EditorModule } from 'primeng/editor';
 import { FileUploadModule } from 'primeng/fileupload';
+import { TagModule } from 'primeng/tag';
+import { InputMaskModule } from 'primeng/inputmask';
 
 import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
@@ -32,6 +34,8 @@ import { CategoriesListComponent } from './pages/categories/categories-list/cate
 import { CategoryEditComponent } from './pages/categories/category-edit/category-edit.component';
 import { ProductsListComponent } from './pages/products/products-list/products-list.component';
 import { ProductsEditComponent } from './pages/products/products-edit/products-edit.component';
+import { UsersListComponent } from './pages/users/users-list/users-list.component';
+import { UserEditComponent } from './pages/users/user-edit/user-edit.component';
 
 const UXMODULE = [
   CardModule,
@@ -48,7 +52,9 @@ const UXMODULE = [
   InputSwitchModule,
   DropdownModule,
   EditorModule,
-  FileUploadModule
+  FileUploadModule,
+  TagModule,
+  InputMaskModule
 ];
 
 @NgModule({
@@ -61,6 +67,8 @@ const UXMODULE = [
     CategoryEditComponent,
     ProductsListComponent,
     ProductsEditComponent,
+    UsersListComponent,
+    UserEditComponent
   ],
   imports: [
     BrowserModule,

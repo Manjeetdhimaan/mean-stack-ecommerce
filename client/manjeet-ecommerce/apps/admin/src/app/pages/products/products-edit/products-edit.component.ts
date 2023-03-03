@@ -2,9 +2,10 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
-import { CategoriesResponse, CategoriesService, Category, Product, ProductResponse, ProductService } from '@manjeet-ecommerce/products';
 import { MessageService } from 'primeng/api';
 import { timer } from 'rxjs';
+
+import { CategoriesResponse, CategoriesService, Category, ProductResponse, ProductService } from '@manjeet-ecommerce/products';
 import { SuccessResponse } from '../../categories/category-edit/category-edit.component';
 
 @Component({

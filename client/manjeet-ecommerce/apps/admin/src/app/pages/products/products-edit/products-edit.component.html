@@ -12,7 +12,7 @@
               <p-button [label]="editMode ? 'Update' : 'Create'" icon="pi
                 pi-plus"
                 styleClass="p-button-primary mr-2" type="submit"></p-button>
-              <p-button label="Cancle" icon="pi pi-arrow-circle-left"
+              <p-button label="Cancel" icon="pi pi-arrow-circle-left"
                 styleClass="p-button-secondary" routerLink="/products"></p-button>
             </div>
           </p-toolbar>
@@ -86,7 +86,7 @@
             </div>
 
             <div class="field col-12">
-              <label for="countInStock">Description</label>
+              <label for="description">Description</label>
               <textarea [rows]="7" pInputTextarea formControlName="description"
                 id="description" class="block w-full"></textarea>
               <small *ngIf="(f['description'].hasError('required') &&
