@@ -24,6 +24,7 @@ import { EditorModule } from 'primeng/editor';
 import { FileUploadModule } from 'primeng/fileupload';
 import { TagModule } from 'primeng/tag';
 import { InputMaskModule } from 'primeng/inputmask';
+import { FieldsetModule } from 'primeng/fieldset';
 
 import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
@@ -36,8 +37,10 @@ import { ProductsListComponent } from './pages/products/products-list/products-l
 import { ProductsEditComponent } from './pages/products/products-edit/products-edit.component';
 import { UsersListComponent } from './pages/users/users-list/users-list.component';
 import { UserEditComponent } from './pages/users/user-edit/user-edit.component';
+import { OrdersListComponent } from './pages/orders/orders-list/orders-list.component';
+import { OrderDetailComponent } from './pages/orders/order-detail/order-detail.component';
 
-const UXMODULE = [
+const PRIMENG_MODULE = [
   CardModule,
   RippleModule,
   ToolbarModule,
@@ -54,7 +57,8 @@ const UXMODULE = [
   EditorModule,
   FileUploadModule,
   TagModule,
-  InputMaskModule
+  InputMaskModule,
+  FieldsetModule
 ];
 
 @NgModule({
@@ -68,16 +72,18 @@ const UXMODULE = [
     ProductsListComponent,
     ProductsEditComponent,
     UsersListComponent,
-    UserEditComponent
+    UserEditComponent,
+    OrdersListComponent,
+    OrderDetailComponent,
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot(appRoutes, { initialNavigation: 'enabledBlocking' }),
-    ...UXMODULE,
+    ...PRIMENG_MODULE,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule,
+    FormsModule
   ],
   providers: [MessageService, ConfirmationService],
   bootstrap: [AppComponent],

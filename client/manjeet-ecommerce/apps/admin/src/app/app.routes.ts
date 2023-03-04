@@ -2,6 +2,8 @@ import { Route } from '@angular/router';
 import { CategoriesListComponent } from './pages/categories/categories-list/categories-list.component';
 import { CategoryEditComponent } from './pages/categories/category-edit/category-edit.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { OrderDetailComponent } from './pages/orders/order-detail/order-detail.component';
+import { OrdersListComponent } from './pages/orders/orders-list/orders-list.component';
 import { ProductsEditComponent } from './pages/products/products-edit/products-edit.component';
 import { ProductsListComponent } from './pages/products/products-list/products-list.component';
 import { UserEditComponent } from './pages/users/user-edit/user-edit.component';
@@ -41,6 +43,12 @@ export const appRoutes: Route[] = [
         },
         {
           path: 'users/edit/:id', component: UserEditComponent
+        },
+        {
+          path: 'orders', component: OrdersListComponent
+        },
+        {
+          path: 'orders/detail/:id', component: OrderDetailComponent
         }
       ]
   }

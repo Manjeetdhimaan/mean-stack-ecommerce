@@ -138,8 +138,7 @@ module.exports.postOrder = async (req, res, next) => {
                 country: req.body.country,
                 phone: req.body.phone
             },
-            status: req.body.status,
-            totolPrice: totalPrice,
+            totalPrice: totalPrice,
             user: req._id
         });
 
@@ -221,7 +220,6 @@ module.exports.deleteOrder = (req, res, next) => {
         return next(err);
     };
 };
-
 
 // order example 
 

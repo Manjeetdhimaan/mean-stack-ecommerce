@@ -34,10 +34,9 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        required: true,
         default: 'Pending'
     },
-    totolPrice: {
+    totalPrice: {
         type: Number
     },
     user: {
@@ -46,7 +45,8 @@ const orderSchema = new mongoose.Schema({
         required: [true, 'Order owner is required']
     },
     currency: {
-        type: String
+        type: String,
+        default: 'INR'
     },
     dateOrdered: {
         type: Date,
