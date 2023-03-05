@@ -1,18 +1,19 @@
-<p>header works!</p>
-<p-accordion>
-    <p-accordionTab header="Header 1">
-       Content 1
-    </p-accordionTab>
-    <p-accordionTab header="Header 2">
-        Content 2
-    </p-accordionTab>
-    <p-accordionTab header="Header 3">
-        Content 3
-    </p-accordionTab>
-</p-accordion>
-
-<div class="grid">
-  <div class="col">1</div>
-  <div class="col">2</div>
-  <div class="col">3</div>
-</div>
+<header>
+  <div class="grid">
+    <div class="col-3">
+      <div class="logo">
+        <img src="assets/images/logo/logo.png" width="100%" alt="Logo">
+      </div>
+    </div>
+    <div class="col-4 search">
+      <products-search></products-search>
+    </div>
+    <div class="col-3 col-offset-1 navigation">
+      <ngshop-nav></ngshop-nav>
+    </div>
+    <div class="col-1 tools">
+      <i class="pi pi-user"></i>
+      <i class="pi pi-shopping-cart"></i>
+    </div>
+  </div>
+</header>
