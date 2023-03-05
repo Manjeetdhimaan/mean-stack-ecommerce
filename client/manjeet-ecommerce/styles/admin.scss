@@ -9,8 +9,14 @@
 @import './base/colors.scss';
 @import './base/mixins.scss';
 @import './base/config.scss';
-@import './apps/admin/shell.scss';
 
 a {
   cursor: pointer;
 }
+
+// Libs
+@import './libs/users/users.scss';
+
+// Shared
+@import './apps/admin/shell.scss';
+@import './apps/admin/dashboard.scss';

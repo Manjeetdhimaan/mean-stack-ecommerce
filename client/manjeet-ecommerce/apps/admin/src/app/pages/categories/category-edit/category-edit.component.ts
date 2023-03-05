@@ -12,6 +12,7 @@ import { MessageService } from 'primeng/api';
 
 import { CategoriesService, Category, CategoryResponse } from '@manjeet-ecommerce/products';
 import { ActivatedRoute, Params } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export interface SuccessResponse {
   success: boolean;
@@ -136,7 +137,7 @@ export class CategoryEditComponent implements OnInit {
     });
   }
 
-  private _errorHandler(err: any) {
+  private _errorHandler(err: HttpErrorResponse) {
     if (err.error['message']) {
       this.messageService.add({
         severity: 'error',

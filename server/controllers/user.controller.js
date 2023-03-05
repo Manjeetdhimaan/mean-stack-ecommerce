@@ -28,7 +28,6 @@ module.exports.getUsers = (req, res, next) => {
                 });
             }
         }).catch(err => {
-            console.log(err);
             return next(err);
         })
     } catch (err) {

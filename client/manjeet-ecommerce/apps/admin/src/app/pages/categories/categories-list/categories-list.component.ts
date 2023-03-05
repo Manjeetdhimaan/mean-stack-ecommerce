@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -84,7 +85,7 @@ export class CategoriesListComponent implements OnInit {
     this.router.navigate(['/categories/edit/'+categoryId]);
   }
 
-  private _errorHandler(err: any) {
+  private _errorHandler(err: HttpErrorResponse) {
     if (err.error['message']) {
       this.messageService.add({
         severity: 'error',

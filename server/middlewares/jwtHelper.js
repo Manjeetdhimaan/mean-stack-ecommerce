@@ -47,7 +47,7 @@ module.exports.isAdmin =  (req, res, next) => {
             else if (!user){
                 return res.status(404).send({
                     auth: false,
-                    message: 'No account found'
+                    message: 'Not Authorized'
                 });
            }
             else if ( !user.isAdmin ){

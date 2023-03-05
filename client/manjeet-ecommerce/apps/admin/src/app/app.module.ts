@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 import { CardModule } from 'primeng/card';
@@ -25,7 +25,9 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { TagModule } from 'primeng/tag';
 import { InputMaskModule } from 'primeng/inputmask';
 import { FieldsetModule } from 'primeng/fieldset';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
+import { AuthInterceptor, UsersModule } from '@manjeet-ecommerce/users';
 import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
@@ -58,7 +60,8 @@ const PRIMENG_MODULE = [
   FileUploadModule,
   TagModule,
   InputMaskModule,
-  FieldsetModule
+  FieldsetModule,
+  ProgressSpinnerModule
 ];
 
 @NgModule({
@@ -83,9 +86,18 @@ const PRIMENG_MODULE = [
     ...PRIMENG_MODULE,
     HttpClientModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    UsersModule
   ],
-  providers: [MessageService, ConfirmationService],
+  providers: [
+    MessageService,
+    ConfirmationService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule { }

@@ -28,6 +28,54 @@ module.exports.getOrders = (req, res, next) => {
     }
 };
 
+module.exports.getTotalSales = (req, res, next) => {
+    try {
+        Order.find().select('totalPrice').then(orders => {
+            if (!orders || orders.length < 1) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'No orders found.'
+                });
+            } else {
+                let totalSales = 0
+                orders.reduce((acc, curr) =>{
+                    totalSales += curr.totalPrice;
+                },0);
+                return res.status(200).json({
+                    success: true,
+                    totalSales: totalSales
+                });
+            }
+        }).catch(err => {
+            return next(err);
+        })
+    } catch (err) {
+        return next(err);
+    }
+};
+
+module.exports.getOrderCount = (req, res, next) => {
+    try {
+        Order.countDocuments().then(orderCount => {
+            if (!orderCount || orderCount.length < 1) {
+                return res.status(404).json({
+                    success: false,
+                    message: 'No Orders found.'
+                });
+            } else {
+                return res.status(200).json({
+                    success: true,
+                    orderCount: orderCount
+                });
+            }
+        }).catch(err => {
+            return next(err);
+        })
+    } catch (err) {
+        return next(err);
+    }
+};
+
 module.exports.getUserOrders = (req, res, next) => {
     try {
         Order.find({user: req._id}).populate({

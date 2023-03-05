@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 import { environment } from '@env/environment'
 import { ServerResponse } from './categories.service';
@@ -28,23 +28,28 @@ export class ProductService {
 
   constructor(private http: HttpClient) { }
 
-  getProducts():Observable<ProductsResponse> {
+  getProducts(): Observable<ProductsResponse> {
     return this.http.get<ProductsResponse>(`${this.productBaseUrl}/get-products`);
   }
 
-  getProduct(productId: string):Observable<ProductResponse> {
+  getProduct(productId: string): Observable<ProductResponse> {
     return this.http.get<ProductResponse>(`${this.productBaseUrl}/get-product/${productId}`);
   }
 
-  postProduct(productBody: FormData):Observable<ServerResponse> {
+  postProduct(productBody: FormData): Observable<ServerResponse> {
     return this.http.post<ServerResponse>(`${this.productBaseUrl}/post-product`, productBody);
   }
 
-  updateProduct(productId: string, productBody: FormData):Observable<ServerResponse> {
+  updateProduct(productId: string, productBody: FormData): Observable<ServerResponse> {
     return this.http.put<ServerResponse>(`${this.productBaseUrl}/update-product/${productId}`, productBody);
   }
 
-  deleteProduct(productId: string):Observable<ServerResponse> {
+  deleteProduct(productId: string): Observable<ServerResponse> {
     return this.http.delete<ServerResponse>(`${this.productBaseUrl}/delete-product/${productId}`);
+  }
+
+  getProductsCount(): Observable<number> {
+    return this.http.get<number>(`${this.productBaseUrl}/get-products-count`)
+      .pipe(map((objectValue: any) => objectValue.productsCount));
   }
 }
