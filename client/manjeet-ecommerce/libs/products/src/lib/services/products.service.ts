@@ -32,6 +32,10 @@ export class ProductService {
     return this.http.get<ProductsResponse>(`${this.productBaseUrl}/get-products`);
   }
 
+  getFeaturedProducts(count: number, sort: number): Observable<ProductsResponse> {
+    return this.http.get<ProductsResponse>(`${this.productBaseUrl}/get-featured-products/${count}/${sort}`);
+  }
+
   getProduct(productId: string): Observable<ProductResponse> {
     return this.http.get<ProductResponse>(`${this.productBaseUrl}/get-product/${productId}`);
   }

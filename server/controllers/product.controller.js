@@ -299,7 +299,7 @@ module.exports.getFeaturedProducts = (req, res, next) => {
             } else {
                 return res.status(200).json({
                     success: true,
-                    featuredProducts: featuredProducts
+                    products: featuredProducts
                 });
             }
         }).catch(err => {
