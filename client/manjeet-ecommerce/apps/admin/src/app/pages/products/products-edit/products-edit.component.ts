@@ -2,6 +2,7 @@ import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
 import { timer } from 'rxjs';
 
@@ -176,7 +177,7 @@ export class ProductsEditComponent implements OnInit {
     }
   }
 
-  private _errorHandler(err: any) {
+  private _errorHandler(err: HttpErrorResponse) {
     if (err.error['message']) {
       this.messageService.add({
         severity: 'error',

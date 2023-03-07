@@ -9,7 +9,7 @@ module.exports.getProducts = (req, res, next) => {
         if (req.query.categories) {
             filter = {category: req.query.categories.split(',')}
         }
-        Product.find(filter).populate('category', 'name').then(products => {
+        Product.find(filter).select('name price image currency').populate('category', 'name').then(products => {
             if (!products || products.length < 1) {
                 return res.status(203).json({
                     success: false,
@@ -288,7 +288,7 @@ module.exports.getFeaturedProducts = (req, res, next) => {
         const count = req.params.count ? +req.params.count : 10;
         Product.find({
             isFeatured: true
-        }).sort({
+        }).select('name price image currency').sort({
             _id: sort
         }).limit(count).then(featuredProducts => {
             if (!featuredProducts || featuredProducts.length < 1) {

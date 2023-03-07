@@ -31,11 +31,12 @@ export class ProductService {
   getProducts(categoriesFilter?: string[]): Observable<ProductsResponse> {
     let params = new HttpParams()
     if(categoriesFilter) {
-      params = params.append('categories', categoriesFilter.join(','))
+      // params = params.append('categories', categoriesFilter.join(','))
       // or below approach //
-      // return this.http.get<ProductsResponse>(`${this.productBaseUrl}/get-products?categories=${categoriesFilter}`);
+      return this.http.get<ProductsResponse>(`${this.productBaseUrl}/get-products?categories=${categoriesFilter}`);
     }
-    return this.http.get<ProductsResponse>(`${this.productBaseUrl}/get-products`, {params: params});
+    // return this.http.get<ProductsResponse>(`${this.productBaseUrl}/get-products`, {params: params});
+    return this.http.get<ProductsResponse>(`${this.productBaseUrl}/get-products`);
   }
 
   getFeaturedProducts(count: number, sort: number): Observable<ProductsResponse> {
