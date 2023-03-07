@@ -1,6 +1,7 @@
 <div class="featured-products">
   <h3>Feartured Products</h3>
-  <div class="grid">
+  <i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+  <div class="grid" *ngIf="!isLoading && products.length > 0">
     <div class="col-3" *ngFor="let product of products">
       <products-product [product]="product"></products-product>
     </div>

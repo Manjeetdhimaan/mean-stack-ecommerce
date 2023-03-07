@@ -1,0 +1,21 @@
+<div class="products-page">
+  <div class="grid">
+    <div class="col-3">
+      <i *ngIf="isLoadingCategories" class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+      <h4>Categories</h4>
+      <div class="field-checkbox" *ngFor="let category of categories">
+        <p-checkbox [(ngModel)]="category.checked" [binary]="true" [inputId]="category._id" (onChange)="categoryFilter()"></p-checkbox>
+        <label [for]="category._id">{{category.name}}</label>
+    </div>
+    </div>
+    <div class="col-9">
+    <i *ngIf="isLoadingProducts" class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
+    <h3 *ngIf="!isLoadingProducts && (!products || products.length<1)">No Products found in this category</h3>
+      <div class="grid" *ngIf="products && products.length > 0">
+        <div class="col-4" *ngFor="let product of products">
+          <products-product [product]="product"></products-product>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
