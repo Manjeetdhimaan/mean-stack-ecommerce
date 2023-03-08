@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 
 import { Product } from '../../models/product.model';
 import { ProductService, ProductsResponse } from '../../services/products.service';
@@ -25,7 +26,6 @@ export class FeaturedProductsComponent implements OnInit {
     this.isLoading = true;
     this.productService.getFeaturedProducts(4, -1).subscribe((res: ProductsResponse) => {
       this.products = res['products'];
-      console.log(this.products)
       this.isLoading = false;
       this.isError = false;
     }, err => {
@@ -35,7 +35,7 @@ export class FeaturedProductsComponent implements OnInit {
     })
   }
 
-  private _errorHandler(err: any) {
+  private _errorHandler(err: HttpErrorResponse) {
     if (err.error['message']) {
       this.serverErrMsg = err.error['message'];
     } else {

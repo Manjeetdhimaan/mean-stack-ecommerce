@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const User = mongoose.model('User');
+const Product = mongoose.model('Product');
 
 const userExists = async (email) => {
     const user = await User.findOne({
@@ -88,7 +89,7 @@ module.exports.postUser = async (req, res, next) => {
             })
         }
         user.save().then((saveUser) => {
-            if(!saveUser) {
+            if (!saveUser) {
                 return res.status(500).send({
                     success: false,
                     message: 'An error occured! Please try again.'
@@ -114,7 +115,7 @@ module.exports.postUser = async (req, res, next) => {
 }
 
 module.exports.updateUser = async (req, res, next) => {
-    try {       
+    try {
         User.findByIdAndUpdate(req.params.id).then((founededUser) => {
             if (!founededUser) {
                 return res.status(404).send({
@@ -171,17 +172,53 @@ module.exports.updateUser = async (req, res, next) => {
 
 module.exports.authenticateUser = (req, res, next) => {
     try {
-        User.findOne({email: req.body.email}).then((user) => {
+        User.findOne({
+            email: req.body.email
+        }).then((user) => {
             if (!user) {
                 return res.status(404).send({
                     success: false,
                     message: 'No account found with this email address!'
                 });
-            }
-            else if(!user.verifyPassword(req.body.password)) {
+            } else if (!user.verifyPassword(req.body.password)) {
                 return res.status(401).send({
                     success: false,
                     message: 'Incorrect password'
+                });
+            }
+            return res.status(200).send({
+                success: true,
+                message: 'User fetched succussfully!',
+                _id: user['_id'],
+                name: user['name'],
+                token: user.generateJwt(req.body.remeberMe)
+            });
+        }).catch(err => {
+            return next(err);
+        })
+    } catch (err) {
+        return next(err);
+    }
+};
+
+module.exports.authenticateUserAsAdmin = (req, res, next) => {
+    try {
+        User.findOne({
+            email: req.body.email
+        }).then((user) => {
+            if (!user) {
+                return res.status(404).send({
+                    success: false,
+                    message: 'No account found with this email address!'
+                });
+            } else if (!user.verifyPassword(req.body.password)) {
+                return res.status(401).send({
+                    success: false,
+                    message: 'Incorrect password'
+                });
+            } else if (!user.isAdmin) {
+                return res.status(401).send({
+                    message: 'Not Authorized.'
                 });
             }
             return res.status(200).send({
@@ -240,4 +277,98 @@ module.exports.deleteUser = (req, res, next) => {
     } catch (err) {
         return next(err);
     }
+};
+
+// User Cart methods
+module.exports.postCart = async (req, res, next) => {
+    const user = await User.findById(req.body.userId);
+    if (!user) {
+        return res.status(404).json({
+            success: false,
+            message: 'No account found with this id'
+        })
+    }
+    const prodId = req.body.productId;
+    const quantity = req.body.quantity;
+    Product.findById(prodId)
+        .then(product => {
+            return user.addToCart(product, quantity);
+        })
+        .then(result => {
+            // console.log(result);
+            return res.status(201).json({
+                success: true,
+                message: 'Product added to cart'
+            })
+        })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
+};
+
+module.exports.postMultipleToCart = async (req, res, next) => {
+    const user = await User.findById(req.body.userId);
+    if (!user) {
+        return res.status(404).json({
+            success: false,
+            message: 'No account found with this id'
+        })
+    }
+
+    const products = [];
+    for (let p of req.body.cart.items) {
+        await Product.findById(p.productId)
+        .then(product => {
+            if(product)  {
+                products.push(p);
+            }
+        })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
+    }
+    await user.addMultipleToCart(products);
+    return res.status(201).json({
+        success: true,
+        messsage: 'All products added to cart'
+    });
+};
+
+module.exports.getCart = (req, res, next) => {
+    var options = {
+        path: 'cart.items.productId'
+    };
+    req.user
+        .populate(options)
+        .then(user => {
+            const products = user.cart.items;
+            res.render('shop/cart', {
+                path: '/cart',
+                pageTitle: 'Your Cart',
+                products: products
+            });
+        })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
+};
+
+module.exports.postCartDeleteProduct = (req, res, next) => {
+    const prodId = req.body.productId;
+    req.user
+        .removeFromCart(prodId)
+        .then(result => {
+            res.redirect('/cart');
+        })
+        .catch(err => {
+            const error = new Error(err);
+            error.httpStatusCode = 500;
+            return next(error);
+        });
 };

@@ -31,7 +31,6 @@ module.exports.verifyJwtToken = (req, res, next) => {
     }
 }
 
-
 module.exports.isAdmin =  (req, res, next) => {
     User.findOne({
             _id: req._id

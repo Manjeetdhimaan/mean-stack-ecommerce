@@ -15,7 +15,6 @@ import { SuccessResponse } from '../../categories/category-edit/category-edit.co
   styles: [],
 })
 export class ProductsEditComponent implements OnInit {
-
   editMode = false;
   submitted = false;
   isLoading = false;
@@ -130,7 +129,7 @@ export class ProductsEditComponent implements OnInit {
         this.isLoading = false;
         this.isError = false;
         if (res.success) {
-          this.messageService.add({severity:'success', summary:'Success', detail: res['message']});
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: res['message'] });
           // this.router.navigate(['/categories']);
           timer(1000).toPromise().then(() => {
             this.location.back();

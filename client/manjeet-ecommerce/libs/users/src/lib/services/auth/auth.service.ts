@@ -27,6 +27,10 @@ export class AuthService {
     return this.http.post<LoginResponse>(`${this.authBaseUrl}/user-login`, {email, password});
   }
 
+  adminLogin(email: string, password: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.authBaseUrl}/admin-login`, {email, password});
+  }
+
   logout() {
     this.deleteToken();
   }

@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const devEnv = require('../dev-env/dev-env');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -25,6 +24,19 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    cart: {
+        items: [{
+            productId: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'Product',
+                required: true
+            },
+            quantity: {
+                type: Number,
+                required: true
+            }
+        }]
+    },
     address: {
         type: Object,
         street: {
@@ -47,6 +59,80 @@ const userSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+userSchema.methods.addToCart = function (product, productQuantity) {
+    const cartProductIndex = this.cart.items.findIndex(cp => {
+        return cp.productId.toString() === product._id.toString();
+    });
+    let newQuantity = 1;
+    if (productQuantity) {
+        newQuantity = productQuantity;
+    }
+    const updatedCartItems = [...this.cart.items];
+    if (cartProductIndex >= 0) {
+        newQuantity = this.cart.items[cartProductIndex].quantity + newQuantity;
+        updatedCartItems[cartProductIndex].quantity = newQuantity;
+    } else {
+        updatedCartItems.push({
+            productId: product._id,
+            quantity: newQuantity
+        });
+    }
+    const updatedCart = {
+        items: updatedCartItems
+    };
+    this.cart = updatedCart;
+    return this.save();
+};
+
+userSchema.methods.addMultipleToCart = function (products) {
+    const updatedCartItems = [...this.cart.items];
+    let newQuantity = 1;
+    if (this.cart && this.cart.items.length > 0) {
+        const cartProdIds = [];
+        this.cart.items.map(cp => {
+            cartProdIds.push(cp.productId.toString());
+        })
+        products.map((p, index) => {
+            if (cartProdIds.includes(p.productId.toString())) {
+                newQuantity = this.cart.items[index].quantity + p.quantity;
+                updatedCartItems[index].quantity = newQuantity;
+            } else {
+                updatedCartItems.push({
+                    productId: p.productId,
+                    quantity: p.quantity
+                })
+            }
+        });
+    } else {
+        products.map(p => {
+            updatedCartItems.push({
+                productId: p.productId,
+                quantity: p.quantity
+            });
+        })
+    }
+    const updatedCart = {
+        items: updatedCartItems
+    };
+    this.cart = updatedCart;
+    return this.save();
+};
+
+userSchema.methods.removeFromCart = function (productId) {
+    const updatedCartItems = this.cart.items.filter(item => {
+        return item.productId.toString() !== productId.toString();
+    });
+    this.cart.items = updatedCartItems;
+    return this.save();
+};
+
+userSchema.methods.clearCart = function () {
+    this.cart = {
+        items: []
+    };
+    return this.save();
+};
 
 userSchema.virtual('id').get(function () {
     return this._id.toHexString();

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Location } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
 import { timer } from 'rxjs';
 
@@ -143,7 +144,7 @@ export class UserEditComponent {
     }
   }
 
-  private _errorHandler(err: any) {
+  private _errorHandler(err: HttpErrorResponse) {
     if (err.error['message']) {
       this.messageService.add({
         severity: 'error',

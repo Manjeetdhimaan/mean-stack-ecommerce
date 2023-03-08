@@ -8,6 +8,7 @@ import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { RatingModule } from 'primeng/rating';
+import { ToastModule } from 'primeng/toast';
 
 import { ProductsSearchComponent } from './components/products-search/products-search.component';
 import { CategoriesBannerComponent } from './components/categories-banner/categories-banner.component';
@@ -16,6 +17,7 @@ import { FeaturedProductsComponent } from './components/featured-products/featur
 import { ProductsListComponent } from './pages/products-list/products-list.component';
 import { ProductDetailsComponent } from './pages/product-details/product-details.component';
 import { UiModule } from '@manjeet-ecommerce/ui';
+import { MessageService } from 'primeng/api';
 
 const routes: Routes = [
   {
@@ -42,7 +44,8 @@ const routes: Routes = [
     FormsModule,
     InputNumberModule,
     RatingModule,
-    UiModule
+    UiModule,
+    ToastModule
   ],
   declarations: [
     ProductsSearchComponent,
@@ -60,5 +63,6 @@ const routes: Routes = [
     ProductsListComponent,
     ProductDetailsComponent,
   ],
+  providers: [MessageService]
 })
 export class ProductsModule { }

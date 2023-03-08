@@ -64,11 +64,9 @@ export class ProductsListComponent implements OnInit {
           }
           this.isLoadingProducts = false;
           this.serverErrMsg = '';
-          return;
         }, err => {
           this.isLoadingProducts = false;
           this._errorHandler(err);
-          return;
         })
       }
       else {

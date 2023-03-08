@@ -9,7 +9,11 @@ router.get('/get-users-count', jwtHelper.verifyJwtToken, jwtHelper.isAdmin, ctrl
 router.get('/get-user/:id', ctrlUser.getUser);
 router.post('/post-user', jwtHelper.verifyJwtToken, jwtHelper.isAdmin, ctrlUser.postUser);
 router.post('/user-login', ctrlUser.authenticateUser);
+router.post('/admin-login', ctrlUser.authenticateUserAsAdmin);
 router.put('/update-user/:id', ctrlUser.updateUser);
 router.delete('/delete-user/:id', jwtHelper.verifyJwtToken, jwtHelper.isAdmin, ctrlUser.deleteUser);
+
+router.post('/post-user-cart', ctrlUser.postCart);
+router.post('/post-many-to-cart', ctrlUser.postMultipleToCart);
 
 module.exports = router;
