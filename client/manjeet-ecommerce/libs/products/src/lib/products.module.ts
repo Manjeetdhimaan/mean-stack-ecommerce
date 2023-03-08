@@ -15,6 +15,7 @@ import { ProductComponent } from './components/product/product.component';
 import { FeaturedProductsComponent } from './components/featured-products/featured-products.component';
 import { ProductsListComponent } from './pages/products-list/products-list.component';
 import { ProductDetailsComponent } from './pages/product-details/product-details.component';
+import { UiModule } from '@manjeet-ecommerce/ui';
 
 const routes: Routes = [
   {
@@ -40,7 +41,8 @@ const routes: Routes = [
     CheckboxModule,
     FormsModule,
     InputNumberModule,
-    RatingModule
+    RatingModule,
+    UiModule
   ],
   declarations: [
     ProductsSearchComponent,
