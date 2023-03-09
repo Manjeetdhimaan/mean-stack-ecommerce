@@ -14,6 +14,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { HeaderComponent } from './shared/header/header.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { NavComponent } from './shared/nav/nav.component';
+import { OrdersModule } from '@manjeet-ecommerce/orders';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { NavComponent } from './shared/nav/nav.component';
     RouterModule.forRoot(appRoutes, { initialNavigation: 'enabledBlocking' }),
     UiModule,
     AccordionModule,
-    ProductsModule
+    ProductsModule,
+    OrdersModule
   ],
   providers: [],
   bootstrap: [AppComponent],

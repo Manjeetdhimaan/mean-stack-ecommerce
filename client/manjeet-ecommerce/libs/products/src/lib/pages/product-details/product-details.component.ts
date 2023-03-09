@@ -4,6 +4,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { Product } from '../../models/product.model';
 import { ProductResponse, ProductService } from '../../services/products.service';
+import { CartService } from '@manjeet-ecommerce/orders';
+import { CartItem } from 'libs/orders/src/lib/models/cart.model';
 
 @Component({
   selector: 'products-details',
@@ -12,11 +14,11 @@ import { ProductResponse, ProductService } from '../../services/products.service
 })
 export class ProductDetailsComponent implements OnInit {
   product: Product;
-  quantity: number;
+  quantity: number = 1;
   isLoading = false;
   serverErrMsg: string;
 
-  constructor(private productService: ProductService, private activatedRoute: ActivatedRoute) { }
+  constructor(private productService: ProductService, private activatedRoute: ActivatedRoute, private cartService: CartService) { }
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((params: Params) => {
@@ -26,7 +28,13 @@ export class ProductDetailsComponent implements OnInit {
     });
   }
 
-  addProductToCart() { }
+  addProductToCart(productId: string) {
+    const cartItem: CartItem = {
+      productId: productId,
+      quantity: this.quantity
+    }
+    this.cartService.setCartToLocalStorage(cartItem);
+  }
 
   private _getProduct(id: string) {
     this.serverErrMsg = '';

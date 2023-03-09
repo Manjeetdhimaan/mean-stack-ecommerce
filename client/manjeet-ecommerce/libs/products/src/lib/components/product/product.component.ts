@@ -20,18 +20,22 @@ export class ProductComponent {
   constructor( private cartService: CartService, private messageService: MessageService, private authService: AuthService ) {}
 
   onAddtoCart(productId: string) {
-    const cartObject = {
-      productId,
+    const cartItem = {
+      productId: productId,
       quantity: 1
     }
-    this.isLoading = true;
-    this.cartService.postCart(cartObject).subscribe((res: ServerResponse) => {
-      this.isLoading = false;
-      this.messageService.add({severity:'success', summary:'Success', detail: res['message']});
-    }, err => {
-      this.isLoading = false;
-      this._errorHandler(err);
-    })
+    // if user in not logged in
+    this.cartService.setCartToLocalStorage(cartItem);
+
+    // if user is logged in
+    // this.isLoading = true;
+    // this.cartService.postCart(cartItem).subscribe((res: ServerResponse) => {
+    //   this.isLoading = false;
+    //   this.messageService.add({severity:'success', summary:'Success', detail: res['message']});
+    // }, err => {
+    //   this.isLoading = false;
+    //   this._errorHandler(err);
+    // })
   }
 
   private _errorHandler(err: HttpErrorResponse) {
