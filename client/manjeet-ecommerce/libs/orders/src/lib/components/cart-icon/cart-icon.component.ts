@@ -24,9 +24,11 @@ export class CartIconComponent implements OnInit, OnDestroy {
 
     this.subs$ = this.cartService.cart$.subscribe((cart: Cart) => {
       this.cartCount = 0;
-      cart.items.map((item: CartItem) => {
-        this.cartCount += item.quantity;
-      });
+      if (cart) {
+        cart.items.map((item: CartItem) => {
+          this.cartCount += item.quantity;
+        });
+      }
     })
   }
 

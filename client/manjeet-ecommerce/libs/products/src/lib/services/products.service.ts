@@ -29,7 +29,7 @@ export class ProductService {
   constructor(private http: HttpClient) { }
 
   getProducts(categoriesFilter?: string[], productsIds?: string[]): Observable<ProductsResponse> {
-    let params = new HttpParams()
+    let params = new HttpParams();
     if(categoriesFilter) {
       // params = params.append('categories', categoriesFilter.join(','))
       // or below approach //

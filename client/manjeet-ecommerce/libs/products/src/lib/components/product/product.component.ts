@@ -26,6 +26,7 @@ export class ProductComponent {
     }
     // if user in not logged in
     this.cartService.setCartToLocalStorage(cartItem);
+    // this.messageService.add({severity:'success', summary:'Success', detail: 'Cart updated'});
 
     // if user is logged in
     // this.isLoading = true;

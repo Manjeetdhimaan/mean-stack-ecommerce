@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 import { environment } from '@env/environment';
 import { ServerResponse } from '@manjeet-ecommerce/products';
@@ -14,7 +14,7 @@ export const CART_KEY = 'cart'
 export class CartService {
 
   productBaseUrl = `${environment.apiBaseUrl}/users`;
-  cart$: Subject<Cart> = new Subject();
+  cart$: BehaviorSubject<Cart> = new BehaviorSubject(this.getCartItems());
 
   constructor(private http: HttpClient) { }
 
@@ -30,13 +30,18 @@ export class CartService {
     localStorage.setItem(CART_KEY, initialCartJson);
   }
 
-  setItemToCart(fetchedCart: string, cartItem: CartItem) {
+  setItemToCart(fetchedCart: string, cartItem: CartItem, updateQuantity?: boolean) {
     const cart: Cart = JSON.parse(fetchedCart);
     const catrItemExitsIndex = cart.items.findIndex(item => item.productId === cartItem.productId);
     if (catrItemExitsIndex >= 0) {
-      let newQuantity = cartItem.quantity;
-      newQuantity = cart.items[catrItemExitsIndex].quantity + newQuantity;
-      cart.items[catrItemExitsIndex].quantity = newQuantity;
+      if(updateQuantity) {
+        cart.items[catrItemExitsIndex].quantity = cartItem.quantity;
+      }
+      else {
+        let newQuantity = cartItem.quantity;
+        newQuantity = cart.items[catrItemExitsIndex].quantity + newQuantity;
+        cart.items[catrItemExitsIndex].quantity = newQuantity;
+      }
     }
     else {
       cart.items.push(cartItem);
@@ -49,22 +54,22 @@ export class CartService {
   getCartItems() {
     const fetchedCart = localStorage.getItem(CART_KEY);
     if(fetchedCart) {
-      this.cart$.next(JSON.parse(fetchedCart));
+      // this.cart$.next(JSON.parse(fetchedCart));
       return JSON.parse(fetchedCart);
     }
   }
 
-  setCartToLocalStorage(cartItem: CartItem) {
+  setCartToLocalStorage(cartItem: CartItem, updateQuantity?: boolean) {
     const fetchedCart = localStorage.getItem(CART_KEY);
     if (fetchedCart) {
-      this.setItemToCart(fetchedCart, cartItem);
+      this.setItemToCart(fetchedCart, cartItem, updateQuantity);
     }
     else {
       this.initCartLocalStorage();
 
       const fetchedCart2 = localStorage.getItem(CART_KEY);
       if (fetchedCart2) {
-        this.setItemToCart(fetchedCart2, cartItem);
+        this.setItemToCart(fetchedCart2, cartItem, updateQuantity);
       }
     }
   }
