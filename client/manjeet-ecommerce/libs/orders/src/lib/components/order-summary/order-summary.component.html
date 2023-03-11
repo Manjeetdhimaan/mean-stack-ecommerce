@@ -2,7 +2,8 @@
   <h3>Order Summary</h3>
   <div class="summary-price">
     <span>Items Price</span>
-    <span>{{ totalPrice | currency: currency }}</span>
+    <span *ngIf="!isLoading">{{ totalPrice | currency: currency }}</span>
+    <i *ngIf="isLoading" class="pi pi-spin pi-spinner"></i>
   </div>
   <div class="summary-price">
     <span>Packing & Shipping</span>
@@ -11,10 +12,11 @@
   <div class="to-checkout">
     <div class="summary-price">
       <span>Total Price</span>
-      <span>{{ totalPrice | currency: currency }}</span>
+      <span *ngIf="!isLoading">{{ totalPrice | currency: currency }}</span>
+      <i *ngIf="isLoading" class="pi pi-spin pi-spinner"></i>
     </div>
     <div class="checkout-button" *ngIf="!isCheckout">
-      <p-button label="Checkout" (onClick)="navigateToCheckout()"></p-button>
+      <p-button label="Checkout" [loading]="isLoading" routerLink="/checkout"></p-button>
     </div>
   </div>
 </div>

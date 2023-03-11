@@ -3,7 +3,6 @@ import { OrderItem } from "./order-item.model"
 
 export class Order {
   constructor(
-    public _id: string,
     public orderItems: OrderItem[],
     public address: {
       shippingAddress1: string,
@@ -13,11 +12,13 @@ export class Order {
       country: string,
       phone: string | number
     },
-    public currency: string,
     public status: string,
-    public totalPrice: number,
-    public user: User,
     public dateOrdered: string,
-    public id?: string
+    public userId: string,
+    public _id: string,
+    public user?: User,
+    public currency?: string,
+    public totalPrice?: number,
+    public id?: string,
   ) { }
 }

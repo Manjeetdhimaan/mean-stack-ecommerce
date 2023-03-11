@@ -2,9 +2,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
-import { Order, OrderService, OrdersResponse } from '@manjeet-ecommerce/orders';
+import { Order, OrderService, OrdersResponse, ORDER_STATUS } from '@manjeet-ecommerce/orders';
 import { ServerResponse } from '@manjeet-ecommerce/products';
-import { ORDER_STATUS } from '../order.contants';
 
 @Component({
   selector: 'admin-orders-list',

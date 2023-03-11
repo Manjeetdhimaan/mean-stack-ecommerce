@@ -44,7 +44,7 @@
         </div>
         <div class="grid" style="color: green">
           <div class="col-2 font-bold col-offset-8">Total Price</div>
-          <div class="col-2 font-bold">{{ order.totalPrice | currency }}</div>
+          <div class="col-2 font-bold">{{ order.totalPrice | currency: order.currency }}</div>
         </div>
       </p-fieldset>
       <p-fieldset legend="Order Address" [toggleable]="true">
@@ -59,7 +59,7 @@
           </div>
           <div class="col-4">
             <h5>Customer Name</h5>
-            <p>{{ order.user.name }}</p>
+            <p>{{ order.user?.name }}</p>
           </div>
           <div class="col-4">
             <h5>Contact Details</h5>

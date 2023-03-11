@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Injectable, EventEmitter, Output } from '@angular/core';
+import { Observable, BehaviorSubject, Subject } from 'rxjs';
 
 import { environment } from '@env/environment';
 import { ServerResponse } from '@manjeet-ecommerce/products';
@@ -15,6 +15,7 @@ export class CartService {
 
   productBaseUrl = `${environment.apiBaseUrl}/users`;
   cart$: BehaviorSubject<Cart> = new BehaviorSubject(this.getCartItems());
+  @Output() isLoading: EventEmitter<boolean> = new EventEmitter(true);
 
   constructor(private http: HttpClient) { }
 
@@ -72,5 +73,14 @@ export class CartService {
         this.setItemToCart(fetchedCart2, cartItem, updateQuantity);
       }
     }
+  }
+
+  emptyCart() {
+    const intialCart = {
+      items: []
+    };
+    const intialCartJson = JSON.stringify(intialCart);
+    localStorage.setItem(CART_KEY, intialCartJson);
+    this.cart$.next(intialCart);
   }
 }

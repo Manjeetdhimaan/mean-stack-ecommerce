@@ -4,6 +4,6 @@ export class OrderItem {
   constructor(
     public quantity: number,
     public product: Product,
-    public _id: string
+    public _id?: string
   ) {}
 }

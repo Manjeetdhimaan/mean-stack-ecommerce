@@ -137,7 +137,7 @@ module.exports.postOrder = async (req, res, next) => {
     try {
         const orderItemIds = Promise.all(req.body.orderItems.map(orderItem => {
             let newOrderItem = new OrderItem({
-                product: orderItem.product,
+                product: orderItem.productId,
                 quantity: orderItem.quantity
             });
             // newOrderItem = await newOrderItem.save();
@@ -179,15 +179,15 @@ module.exports.postOrder = async (req, res, next) => {
         const order = new Order({
             orderItems: orderItemIdsResolved,
             address: {
-                shippingAddress1: req.body.shippingAddress1,
-                shippingAddress2: req.body.shippingAddress2,
-                city: req.body.city,
-                zip: req.body.zip,
-                country: req.body.country,
-                phone: req.body.phone
+                shippingAddress1: req.body.address.shippingAddress1,
+                shippingAddress2: req.body.address.shippingAddress2,
+                city: req.body.address.city,
+                zip: req.body.address.zip,
+                country: req.body.address.country,
+                phone: req.body.address.phone
             },
             totalPrice: totalPrice,
-            user: req._id
+            user: req._id ? req._id : req.body.userId
         });
 
         order.save().then((savedOrder) => {

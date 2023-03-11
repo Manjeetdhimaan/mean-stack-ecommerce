@@ -15,37 +15,51 @@ export class CartComponent implements OnInit {
 
   cartItems: CartProduct[] = [];
   serverErrMsg: string;
+  isLoading: boolean = false;
 
-  constructor( private cartService: CartService, private productService: ProductService ) {}
+  constructor(private cartService: CartService, private productService: ProductService) {
+  }
 
   ngOnInit(): void {
     this._getCart();
+      // this.loadingSubs$ = this.cartService.isLoading.subscribe((event: boolean) => {
+      //   this.isLoading = event;
+      // })
   }
 
   private _getCart() {
-    //  if user is not logged in
+    //  if user is not logged in;
     this.cartService.cart$.pipe(take(1)).subscribe(respCart => {
-      respCart.items.forEach(cartItem => {
-        this.productService.getProduct(cartItem.productId).subscribe(res => {
-          this.cartItems.push({
-            product: res['product'],
-            quantity: cartItem['quantity']
-          })
-        }, err => {
-          this._errorHandler(err);
-        });
-      })
+      if (respCart && respCart.items.length > 0) {
+        // this.isLoading = true;
+        respCart.items.forEach(cartItem => {
+          this.productService.getProduct(cartItem.productId).subscribe(res => {
+            this.cartItems.push({
+              product: res['product'],
+              quantity: cartItem['quantity']
+            });
+            // this.isLoading = false;
+          }, err => {
+            // this.isLoading = false;
+            this._errorHandler(err);
+          });
+        })
+      }
     });
   }
 
-  onUpdateQuantity(event: HTMLInputElement, productId:string) {
+  onLoading (event: boolean) {
+    this.isLoading = event;
+  }
+
+  onUpdateQuantity(event: HTMLInputElement, productId: string) {
     this.cartService.setCartToLocalStorage({
       quantity: +event.value,
       productId: productId
     }, true);
   }
 
-  onDeleteItemFromCart() {}
+  onDeleteItemFromCart() { }
 
   private _errorHandler(err: HttpErrorResponse) {
     if (err.error['message']) {
@@ -54,4 +68,5 @@ export class CartComponent implements OnInit {
       this.serverErrMsg = 'An error occured. Please try again!';
     }
   }
+
 }

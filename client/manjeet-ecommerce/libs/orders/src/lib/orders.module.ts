@@ -5,12 +5,17 @@ import { RouterModule } from '@angular/router';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { DropdownModule } from 'primeng/dropdown';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputMaskModule } from 'primeng/inputmask';
 
 import { ordersRoutes } from './lib.routes';
 import { CartIconComponent } from './components/cart-icon/cart-icon.component';
 import { CartComponent } from './pages/cart/cart.component';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OrderSummaryComponent } from './components/order-summary/order-summary.component';
+import { CheckoutComponent } from './pages/checkout/checkout.component';
+import { ThanksComponent } from './pages/thanks/thanks.component';
 
 @NgModule({
   imports: [
@@ -20,8 +25,24 @@ import { OrderSummaryComponent } from './components/order-summary/order-summary.
     ButtonModule,
     InputNumberModule,
     FormsModule,
+    ReactiveFormsModule,
+    DropdownModule,
+    InputTextModule,
+    InputMaskModule,
   ],
-  declarations: [CartIconComponent, CartComponent, OrderSummaryComponent],
-  exports: [CartIconComponent, CartComponent, OrderSummaryComponent],
+  declarations: [
+    CartIconComponent,
+    CartComponent,
+    OrderSummaryComponent,
+    CheckoutComponent,
+    ThanksComponent,
+  ],
+  exports: [
+    CartIconComponent,
+    CartComponent,
+    OrderSummaryComponent,
+    CheckoutComponent,
+    ThanksComponent,
+  ],
 })
 export class OrdersModule {}
