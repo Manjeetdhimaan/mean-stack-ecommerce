@@ -60,17 +60,19 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 });
 
-userSchema.methods.addToCart = function (product, productQuantity) {
+userSchema.methods.addToCart = function (product, productQuantity, increaseQuantity) {
     const cartProductIndex = this.cart.items.findIndex(cp => {
         return cp.productId.toString() === product._id.toString();
     });
     let newQuantity = 1;
-    if (productQuantity) {
-        newQuantity = productQuantity;
-    }
+
     const updatedCartItems = [...this.cart.items];
     if (cartProductIndex >= 0) {
-        newQuantity = this.cart.items[cartProductIndex].quantity + newQuantity;
+        if (productQuantity >= 1 && !increaseQuantity) {
+            newQuantity = productQuantity;
+        } else {
+            newQuantity = this.cart.items[cartProductIndex].quantity + productQuantity;
+        }
         updatedCartItems[cartProductIndex].quantity = newQuantity;
     } else {
         updatedCartItems.push({
@@ -95,8 +97,10 @@ userSchema.methods.addMultipleToCart = function (products) {
         })
         products.map((p, index) => {
             if (cartProdIds.includes(p.productId.toString())) {
-                newQuantity = this.cart.items[index].quantity + p.quantity;
-                updatedCartItems[index].quantity = newQuantity;
+                if (this.cart.items[index]) {
+                    newQuantity = this.cart.items[index]?.quantity + p.quantity;
+                    updatedCartItems[index].quantity = newQuantity;
+                }
             } else {
                 updatedCartItems.push({
                     productId: p.productId,

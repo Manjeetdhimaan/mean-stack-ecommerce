@@ -62,9 +62,18 @@ export class AuthService {
       return null;
   }
 
-  isLoggedIn() {
+  isAdminLoggedIn() {
     const userPayload = this.getUserPayload();
     if (userPayload && userPayload.isAdmin)
+      return userPayload.exp > Date.now() / 1000;
+    else{
+      return false;
+    }
+  }
+
+  isUserLoggedIn() {
+    const userPayload = this.getUserPayload();
+    if (userPayload)
       return userPayload.exp > Date.now() / 1000;
     else{
       return false;

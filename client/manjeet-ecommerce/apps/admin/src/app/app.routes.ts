@@ -1,5 +1,5 @@
 import { Route } from '@angular/router';
-import { AuthGuard } from '@manjeet-ecommerce/users';
+import { AdminAuthGuard } from '@manjeet-ecommerce/users';
 import { CategoriesListComponent } from './pages/categories/categories-list/categories-list.component';
 import { CategoryEditComponent } from './pages/categories/category-edit/category-edit.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
@@ -14,7 +14,7 @@ import { ShellComponent } from './shared/shell/shell.component';
 export const appRoutes: Route[] = [
   {
     path: '', component: ShellComponent, data: { title: 'Admin Panel' },
-      canActivate: [AuthGuard],
+      canActivate: [AdminAuthGuard],
       children: [
         {
           path: '', component: DashboardComponent,

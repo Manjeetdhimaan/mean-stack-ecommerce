@@ -19,7 +19,7 @@ export interface CategoryResponse {
 
 export interface ServerResponse {
   success: boolean,
-  message: string
+  message: string,
 }
 
 @Injectable({

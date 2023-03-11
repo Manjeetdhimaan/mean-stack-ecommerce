@@ -5,7 +5,7 @@ export class Cart {
 }
 
 export class CartItem {
-  constructor( public productId: string, public quantity: number ) {}
+  constructor( public productId: string, public quantity: number, public _id?: string ) {}
 }
 
 export class CartProduct {

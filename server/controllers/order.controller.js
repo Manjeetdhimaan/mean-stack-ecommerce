@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const Order = mongoose.model('Order');
 const OrderItem = mongoose.model('OrderItem');
+const User = mongoose.model('User');
 
 module.exports.getOrders = (req, res, next) => {
     try {
@@ -38,9 +39,9 @@ module.exports.getTotalSales = (req, res, next) => {
                 });
             } else {
                 let totalSales = 0
-                orders.reduce((acc, curr) =>{
+                orders.reduce((acc, curr) => {
                     totalSales += curr.totalPrice;
-                },0);
+                }, 0);
                 return res.status(200).json({
                     success: true,
                     totalSales: totalSales
@@ -78,10 +79,14 @@ module.exports.getOrderCount = (req, res, next) => {
 
 module.exports.getUserOrders = (req, res, next) => {
     try {
-        Order.find({user: req._id}).populate({
-            path: 'orderItems', populate: { 
-            path: 'product', populate: 'category'
-          }
+        Order.find({
+            user: req._id
+        }).populate({
+            path: 'orderItems',
+            populate: {
+                path: 'product',
+                populate: 'category'
+            }
         }).sort({
             'dateOrdered': -1
         }).then(userOrders => {
@@ -107,27 +112,29 @@ module.exports.getUserOrders = (req, res, next) => {
 module.exports.getOrder = (req, res, next) => {
     try {
         Order.findById(req.params.id)
-        .populate('user', 'name email')
-        .populate({
-            path: 'orderItems', populate: { 
-            path: 'product', populate: 'category'
-          }
-        })
-        .then(order => {
-            if (!order || order.length < 1) {
-                return res.status(404).json({
-                    success: false,
-                    message: 'No order found.'
-                });
-            } else {
-                return res.status(200).json({
-                    success: true,
-                    order: order
-                });
-            }
-        }).catch(err => {
-            return next(err);
-        })
+            .populate('user', 'name email')
+            .populate({
+                path: 'orderItems',
+                populate: {
+                    path: 'product',
+                    populate: 'category'
+                }
+            })
+            .then(order => {
+                if (!order || order.length < 1) {
+                    return res.status(404).json({
+                        success: false,
+                        message: 'No order found.'
+                    });
+                } else {
+                    return res.status(200).json({
+                        success: true,
+                        order: order
+                    });
+                }
+            }).catch(err => {
+                return next(err);
+            })
     } catch (err) {
         return next(err);
     }
@@ -135,6 +142,7 @@ module.exports.getOrder = (req, res, next) => {
 
 module.exports.postOrder = async (req, res, next) => {
     try {
+        const user = await User.findById(req._id);
         const orderItemIds = Promise.all(req.body.orderItems.map(orderItem => {
             let newOrderItem = new OrderItem({
                 product: orderItem.productId,
@@ -163,7 +171,7 @@ module.exports.postOrder = async (req, res, next) => {
             // const currency = orderItem.product.currency
             return totalPrice;
         }));
-        
+
 
         // const totalPrice = totalPrices.map(resObj => {
         //     const totalPr =+ resObj.totalPrice
@@ -197,13 +205,14 @@ module.exports.postOrder = async (req, res, next) => {
                     message: 'Order can not be placed! Please try again.'
                 });
             }
+            return user.clearCart();
+        }).then(() => {
             return res.status(201).send({
                 success: true,
-                message: 'Order placed succussfully!',
-                order: savedOrder
+                message: 'Order placed succussfully!'
             });
         }).catch(err => {
-            return next(err);
+            return next(err);   
         })
     } catch (err) {
         return next(err);
@@ -219,7 +228,7 @@ module.exports.updateOrderStatus = (req, res, next) => {
                     message: 'Category not found!'
                 });
             } else {
-                    founededOrder.status = req.body.status;
+                founededOrder.status = req.body.status;
             };
 
             founededOrder.save().then((savedOrder) => {

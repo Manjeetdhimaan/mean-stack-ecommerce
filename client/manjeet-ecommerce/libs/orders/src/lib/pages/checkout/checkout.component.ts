@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { UserService } from '@manjeet-ecommerce/users';
+import { AuthService, UserService } from '@manjeet-ecommerce/users';
 import { ORDER_STATUS } from 'libs/orders/src/order.constants';
 import { OrderItem } from '../../models/order-item.model';
 import { Order } from '../../models/order.model';
@@ -20,21 +20,25 @@ export class CheckoutComponent implements OnInit {
   isSubmitted = false;
   orderItems: OrderItem[] = [];
   userId = '63f24d93adada1a56d71dc2b';
-  countries:{_id: string, name: string}[] = [];
+  countries: { _id: string, name: string }[] = [];
   serverErrMsg: string;
+  totalPrice: number = 0;
+  quantity: number = 0;
 
   constructor(
     private router: Router,
     private usersService: UserService,
     private formBuilder: FormBuilder,
     private cartService: CartService,
-    private ordersService: OrderService
-  ) {}
+    private ordersService: OrderService,
+    private authService: AuthService
+  ) { }
 
   ngOnInit(): void {
     this._initCheckoutForm();
     this._getCartItems();
     this._getCountries();
+    this._getUserProfile();
   }
 
   private _initCheckoutForm() {
@@ -51,8 +55,37 @@ export class CheckoutComponent implements OnInit {
   }
 
   private _getCartItems() {
-    const cart = this.cartService.getCartItems();
-    this.orderItems = cart.items
+    if (!this.authService.isUserLoggedIn()) {
+      const cart = this.cartService.getCartItemsFromLocalStorage();
+      this.orderItems = cart.items;
+    }
+    else {
+      this.cartService.getCartFromServer().subscribe(res => {
+        this.orderItems = res.products;
+        res.products.forEach((product: any) => {
+          this.totalPrice += +product.productId.price * +product.quantity;
+          this.quantity += +product.quantity;
+          this.cartService.serverCart$.next({ totalPrice: +this.totalPrice, quantity: this.quantity });
+        })
+      })
+    }
+  }
+
+  private _getUserProfile() {
+    this.usersService.getUserProfile().subscribe(res => {
+      this.checkoutFormGroup.patchValue({
+        name: res['user'].name,
+        email: res['user'].email,
+        phone: res['user'].phone,
+        city: res['user'].address.city,
+        country: res['user'].address.country,
+        zip: res['user'].address.zip,
+        street: res['user'].address.street,
+        apartment: res['user'].address.apartment
+      })
+    }, err => {
+      this._errorHandler(err);
+    });
   }
 
   private _getCountries() {
@@ -87,6 +120,7 @@ export class CheckoutComponent implements OnInit {
       (res) => {
         //redirect to thank you page // payment
         this.cartService.emptyCart();
+        this.cartService.serverCart$.next({ totalPrice: 0, quantity: 0 });
         this.router.navigate(['/success']);
       },
       (err) => {

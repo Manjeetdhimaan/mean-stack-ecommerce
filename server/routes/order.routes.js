@@ -10,7 +10,7 @@ router.get('/get-totalsales', jwtHelper.verifyJwtToken, jwtHelper.isAdmin, ctrlO
 // for specific user
 router.get('/get-user-orders', ctrlOrder.getUserOrders);
 router.get('/get-order/:id', ctrlOrder.getOrder);
-router.post('/post-order', ctrlOrder.postOrder);
+router.post('/post-order', jwtHelper.verifyJwtToken, ctrlOrder.postOrder);
 router.put('/update-order-status/:id', jwtHelper.verifyJwtToken, jwtHelper.isAdmin, ctrlOrder.updateOrderStatus);
 router.delete('/delete-order/:id', jwtHelper.verifyJwtToken, jwtHelper.isAdmin, ctrlOrder.deleteOrder);
 

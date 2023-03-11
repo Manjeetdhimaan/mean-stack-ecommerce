@@ -39,6 +39,10 @@ export class UserService {
     return this.http.get<UserResponse>(`${this.userBaseUrl}/get-user/${userId}`);
   }
 
+  getUserProfile():Observable<UserResponse> {
+    return this.http.get<UserResponse>(`${this.userBaseUrl}/get-user-profile`);
+  }
+
   getUsersCount(): Observable<number> {
     return this.http.get<number>(`${this.userBaseUrl}/get-users-count`)
       .pipe(map((objectValue: any) => objectValue.userCount));

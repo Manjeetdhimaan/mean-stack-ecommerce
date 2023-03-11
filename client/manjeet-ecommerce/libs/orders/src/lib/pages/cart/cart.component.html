@@ -9,7 +9,7 @@
       </div>
       <div>
         <h4>
-          My Cart: {{ 2 }} Item(s)
+          My Cart: {{ cartItems.length }} Item(s)
         </h4>
       </div>
       <div class="cart-shipping mb-5">
@@ -18,18 +18,18 @@
       </div>
 
       <div *ngIf="cartItems.length>0">
-      <div class="cart-item mb-5" *ngFor="let cartItem of cartItems">
+      <div class="cart-item mb-5" *ngFor="let cartItem of cartItems; let i = index">
         <div class="grid p-fluid">
           <div class="col-2 cart-item-image">
             <img
               [src]="cartItem.product.image"
               [alt]="cartItem.product.name">
           </div>
-          <div class="col-7" [routerLink]="'/products/product/' + cartItem.product._id" style="cursor: pointer;">
-            <div class="cart-item-name">{{ cartItem.product.name }}</div>
+          <div class="col-7" style="cursor: pointer;">
+            <div class="cart-item-name" [routerLink]="'/products/product/' + cartItem.product._id">{{ cartItem.product.name }}</div>
             <div class="cart-item-price">{{ cartItem.product.price | currency: cartItem.product.currency }}</div>
             <div class="cart-item-remove">
-              <p-button icon="pi pi-trash" (onClick)="onDeleteItemFromCart()"></p-button>
+              <p-button [loading]="isLoadingDelete" icon="pi pi-trash" (onClick)="onDeleteItemFromCart(cartItem.product._id, i, +cartItem.product.price, +cartItem.quantity)"></p-button>
             </div>
           </div>
           <div class="col-3">
@@ -62,3 +62,5 @@
     </div>
   </div>
 </div>
+
+<p-toast></p-toast>

@@ -4,8 +4,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 import { Product } from '../../models/product.model';
 import { ProductResponse, ProductService } from '../../services/products.service';
-import { CartService } from '@manjeet-ecommerce/orders';
+import { CartService, PostCartResponse } from '@manjeet-ecommerce/orders';
 import { CartItem } from 'libs/orders/src/lib/models/cart.model';
+import { AuthService } from '@manjeet-ecommerce/users';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'products-details',
@@ -16,9 +18,10 @@ export class ProductDetailsComponent implements OnInit {
   product: Product;
   quantity: number = 1;
   isLoading = false;
+  isLoadingCart = false;
   serverErrMsg: string;
 
-  constructor(private productService: ProductService, private activatedRoute: ActivatedRoute, private cartService: CartService) { }
+  constructor(private productService: ProductService, private activatedRoute: ActivatedRoute, private cartService: CartService, private authService: AuthService, private messageService: MessageService) { }
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((params: Params) => {
@@ -33,7 +36,22 @@ export class ProductDetailsComponent implements OnInit {
       productId: productId,
       quantity: this.quantity
     }
-    this.cartService.setCartToLocalStorage(cartItem);
+    if (!this.authService.isUserLoggedIn()) {
+      this.cartService.setCartToLocalStorage(cartItem);
+      // this.messageService.add({severity:'success', summary:'Success', detail: 'Cart updated'});
+    }
+    else {
+      // if user is logged in
+      this.isLoadingCart = true;
+      this.cartService.postCart(cartItem, true).subscribe((res: PostCartResponse) => {
+        this.isLoadingCart = false;
+        this.cartService.serverCart$.next({totalPrice: +res.totalPrice, quantity: +res.quantity})
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: res['message'] });
+      }, err => {
+        this.isLoadingCart = false;
+        this._errorHandler(err);
+      })
+    }
   }
 
   private _getProduct(id: string) {

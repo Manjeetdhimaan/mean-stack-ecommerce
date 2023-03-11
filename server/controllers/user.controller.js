@@ -38,7 +38,8 @@ module.exports.getUsers = (req, res, next) => {
 
 module.exports.getUser = (req, res, next) => {
     try {
-        User.findById(req.params.id).select('-passwordHash').then((user) => {
+        const id = req._id ? req._id : req.params.id;
+        User.findById(id).select('-passwordHash').then((user) => {
             if (!user) {
                 return res.status(404).send({
                     success: false,
@@ -281,7 +282,7 @@ module.exports.deleteUser = (req, res, next) => {
 
 // User Cart methods
 module.exports.postCart = async (req, res, next) => {
-    const user = await User.findById(req.body.userId);
+    const user = await User.findById(req._id);
     if (!user) {
         return res.status(404).json({
             success: false,
@@ -292,13 +293,28 @@ module.exports.postCart = async (req, res, next) => {
     const quantity = req.body.quantity;
     Product.findById(prodId)
         .then(product => {
-            return user.addToCart(product, quantity);
+            return user.addToCart(product, quantity, req.body.increaseQuantity);
         })
         .then(result => {
-            // console.log(result);
-            return res.status(201).json({
-                success: true,
-                message: 'Product added to cart'
+            let totalPrice = 0;
+            let quantity = 0;
+            const options = {
+                path: 'cart.items.productId'
+            };
+            user.populate(options).then(user => {
+                const products = user.cart.items;
+                products.map(prod => {
+                    totalPrice += +prod.productId.price * +prod.quantity;
+                    quantity += prod.quantity;
+                })
+                return {totalPrice: totalPrice, quantity: quantity};
+            }).then(cart => {
+                return res.status(201).json({
+                    success: true,
+                    message: 'Product added to cart',
+                    totalPrice: cart.totalPrice,
+                    quantity: cart.quantity
+                })
             })
         })
         .catch(err => {
@@ -309,7 +325,7 @@ module.exports.postCart = async (req, res, next) => {
 };
 
 module.exports.postMultipleToCart = async (req, res, next) => {
-    const user = await User.findById(req.body.userId);
+    const user = await User.findById(req._id);
     if (!user) {
         return res.status(404).json({
             success: false,
@@ -318,7 +334,7 @@ module.exports.postMultipleToCart = async (req, res, next) => {
     }
 
     const products = [];
-    for (let p of req.body.cart.items) {
+    for (let p of req.body.items) {
         await Product.findById(p.productId)
         .then(product => {
             if(product)  {
@@ -338,19 +354,25 @@ module.exports.postMultipleToCart = async (req, res, next) => {
     });
 };
 
-module.exports.getCart = (req, res, next) => {
-    var options = {
+module.exports.getCart = async (req, res, next) => {
+    const user = await User.findById(req._id);
+    if(!user) {
+        return res.status(404).json({
+            success: false,
+            message: 'User not found'
+        })
+    }
+    const options = {
         path: 'cart.items.productId'
     };
-    req.user
-        .populate(options)
-        .then(user => {
+
+    user.populate(options).then(user => {
             const products = user.cart.items;
-            res.render('shop/cart', {
-                path: '/cart',
-                pageTitle: 'Your Cart',
+            return res.status(200).json({
+                success: true,
+                message: 'Cart fetched successfully!',
                 products: products
-            });
+            })
         })
         .catch(err => {
             const error = new Error(err);
@@ -359,12 +381,21 @@ module.exports.getCart = (req, res, next) => {
         });
 };
 
-module.exports.postCartDeleteProduct = (req, res, next) => {
+module.exports.postCartDeleteProduct = async (req, res, next) => {
     const prodId = req.body.productId;
-    req.user
-        .removeFromCart(prodId)
+    const user = await User.findById(req._id);
+    if (!user) {
+        return res.status(404).json({
+            success: false,
+            message: 'User not found',
+        })
+    }
+    user.removeFromCart(prodId)
         .then(result => {
-            res.redirect('/cart');
+            return res.status(201).json({
+                success: true,
+                message: 'Cart Updated'
+            });
         })
         .catch(err => {
             const error = new Error(err);
