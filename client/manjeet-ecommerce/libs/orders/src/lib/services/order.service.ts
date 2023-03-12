@@ -17,6 +17,12 @@ export interface OrderResponse {
   order: Order;
 }
 
+export interface OrderSessionResponse {
+  success: boolean;
+  message: string;
+  sessionId: string;
+}
+
 export interface ServerResponse {
   success: boolean,
   message: string
@@ -37,6 +43,11 @@ export class OrderService {
 
   getOrder(orderId: string):Observable<OrderResponse> {
     return this.http.get<OrderResponse>(`${this.orderBaseUrl}/get-order/${orderId}`);
+  }
+
+
+  createOrderSession(orderBody: Order):Observable<OrderSessionResponse> {
+    return this.http.post<OrderSessionResponse>(`${this.orderBaseUrl}/create-order-session`, orderBody);
   }
 
   postOrder(orderBody: Order):Observable<ServerResponse> {

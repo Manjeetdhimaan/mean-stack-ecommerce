@@ -8,9 +8,10 @@ import { AuthService } from './auth.service';
 })
 export class UserAuthGuard implements CanActivate {
 
-  constructor( private router: Router, private authService: AuthService ) {}
+  constructor( private router: Router, private authService: AuthService ) {
+  }
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
+   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean | UrlTree | Observable<boolean | UrlTree> | Promise<boolean | UrlTree> {
     if(!this.authService.isUserLoggedIn()) {
       this.router.navigateByUrl('/login');
       this.authService.deleteToken();

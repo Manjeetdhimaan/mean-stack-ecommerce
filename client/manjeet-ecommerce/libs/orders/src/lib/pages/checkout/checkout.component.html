@@ -83,7 +83,8 @@
     <div class="col-4">
       <orders-order-summary></orders-order-summary>
       <div class="checkout-button">
-        <p-button label="Place-Order" (onClick)="placeOrder()"></p-button>
+         <span class="p-error">{{ serverErrMsg }}</span>
+        <p-button label="Place-Order" [loading]="isLoading" (onClick)="createOrderSession()"></p-button>
       </div>
     </div>
   </div>

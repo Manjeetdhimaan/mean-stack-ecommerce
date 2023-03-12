@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
+const Product = mongoose.model('Product');;
 
+const devEnv = require('../dev-env/dev-env');
+const stripe = require('stripe')(process.env.STRIPE_SECRET || devEnv.STRIPE_SECRET);
 const Order = mongoose.model('Order');
 const OrderItem = mongoose.model('OrderItem');
 const User = mongoose.model('User');
@@ -218,6 +221,44 @@ module.exports.postOrder = async (req, res, next) => {
         return next(err);
     }
 };
+
+module.exports.createOrderSession = async (req, res, next) => {
+    const orderItems = req.body.orderItems;
+    if(!orderItems) {
+        return res.status(400).json({
+            success: false,
+            message: 'Please check your order items'
+        })
+    }
+
+    const lineItems = await Promise.all(
+        orderItems.map(async (orderItem) => {
+            const product = await Product.findById(orderItem.productId._id);
+            return {
+                price_data: {
+                  currency: 'INR',
+                  product_data: {
+                    name: product.name,
+                  },
+                  unit_amount: +product.price * 100,
+                },
+                quantity: +orderItem.quantity,
+              }
+        })
+    );
+
+    const session = await stripe.checkout.sessions.create({
+        line_items: lineItems,
+        mode: 'payment',
+        success_url: 'http://localhost:4200/success',
+        cancel_url: 'http://localhost:4200/cart',
+      });
+    return res.status(200).json({
+        success: true,
+        message: 'Creating order',
+        sessionId: session.id
+    });
+}
 
 module.exports.updateOrderStatus = (req, res, next) => {
     try {

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 import { environment } from '@env/environment';
 
@@ -19,15 +19,21 @@ const TOKEN = 'token';
 })
 export class AuthService {
 
+  isUserCheckingOut = false;
+  isAdminLogin = false;
+  isUserLoggedIn$: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
   authBaseUrl = `${environment.apiBaseUrl}/users`;
 
   constructor( private http: HttpClient, private router: Router ) {}
 
   login(email: string, password: string): Observable<LoginResponse> {
+    console.log('user login')
     return this.http.post<LoginResponse>(`${this.authBaseUrl}/user-login`, {email, password});
   }
 
   adminLogin(email: string, password: string): Observable<LoginResponse> {
+    console.log('Admin login')
     return this.http.post<LoginResponse>(`${this.authBaseUrl}/admin-login`, {email, password});
   }
 
@@ -47,6 +53,7 @@ export class AuthService {
   deleteToken() {
     localStorage.removeItem(TOKEN);
     this.router.navigate(['/login']);
+    this.isUserLoggedIn$.next(false);
   }
 
   getUserPayload() {
@@ -73,8 +80,10 @@ export class AuthService {
 
   isUserLoggedIn() {
     const userPayload = this.getUserPayload();
-    if (userPayload)
+    if (userPayload && userPayload.exp > Date.now() / 1000){
+      this.isUserLoggedIn$.next(true);
       return userPayload.exp > Date.now() / 1000;
+    }
     else{
       return false;
     }

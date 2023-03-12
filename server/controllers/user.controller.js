@@ -38,7 +38,7 @@ module.exports.getUsers = (req, res, next) => {
 
 module.exports.getUser = (req, res, next) => {
     try {
-        const id = req._id ? req._id : req.params.id;
+        const id = req.params.id ? req.params.id : req._id;
         User.findById(id).select('-passwordHash').then((user) => {
             if (!user) {
                 return res.status(404).send({

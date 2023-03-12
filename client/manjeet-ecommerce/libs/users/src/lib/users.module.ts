@@ -17,6 +17,6 @@ import { LoginComponent } from './pages/login/login.component';
     InputTextModule,
     ReactiveFormsModule
   ],
-  declarations: [LoginComponent],
+  declarations: [LoginComponent]
 })
 export class UsersModule { }

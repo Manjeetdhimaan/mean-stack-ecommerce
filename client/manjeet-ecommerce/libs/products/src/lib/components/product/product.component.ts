@@ -27,7 +27,7 @@ export class ProductComponent {
     // if user in not logged in
     if (!this.authService.isUserLoggedIn()) {
       this.cartService.setCartToLocalStorage(cartItem);
-      // this.messageService.add({severity:'success', summary:'Success', detail: 'Cart updated'});
+      this.messageService.add({severity:'success', summary:'Success', detail: 'Cart updated'});
     }
     else {
       // if user is logged in

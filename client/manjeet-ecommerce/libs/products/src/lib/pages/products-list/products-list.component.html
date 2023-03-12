@@ -1,8 +1,7 @@
 <div class="products-page">
   <div class="grid">
     <div class="col-3" *ngIf="!isCategoryPage">
-      <i *ngIf="isLoadingCategories" class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-      <h4>Categories</h4>
+      <h4>Categories <i *ngIf="isLoadingCategories" class="pi pi-spin pi-spinner"></i></h4>
       <div class="field-checkbox" *ngFor="let category of categories">
         <p-checkbox [(ngModel)]="category.checked" [binary]="true" [inputId]="category._id" (onChange)="categoryFilter()"></p-checkbox>
         <label [for]="category._id">{{category.name}}</label>
@@ -20,4 +19,4 @@
   </div>
 </div>
 
-<p-toast></p-toast>
+<p-toast position="bottom-right"></p-toast>

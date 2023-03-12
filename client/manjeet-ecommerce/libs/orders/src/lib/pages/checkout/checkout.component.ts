@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { StripeService } from 'ngx-stripe';
 
 import { AuthService, UserService } from '@manjeet-ecommerce/users';
 import { ORDER_STATUS } from 'libs/orders/src/order.constants';
@@ -9,6 +10,7 @@ import { OrderItem } from '../../models/order-item.model';
 import { Order } from '../../models/order.model';
 import { CartService } from '../../services/cart.service';
 import { OrderService } from '../../services/order.service';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'orders-checkout',
@@ -19,11 +21,11 @@ export class CheckoutComponent implements OnInit {
   checkoutFormGroup: FormGroup;
   isSubmitted = false;
   orderItems: OrderItem[] = [];
-  userId = '63f24d93adada1a56d71dc2b';
   countries: { _id: string, name: string }[] = [];
   serverErrMsg: string;
   totalPrice: number = 0;
   quantity: number = 0;
+  isLoading = false;
 
   constructor(
     private router: Router,
@@ -31,7 +33,8 @@ export class CheckoutComponent implements OnInit {
     private formBuilder: FormBuilder,
     private cartService: CartService,
     private ordersService: OrderService,
-    private authService: AuthService
+    private authService: AuthService,
+    private stripeService: StripeService
   ) { }
 
   ngOnInit(): void {
@@ -96,11 +99,12 @@ export class CheckoutComponent implements OnInit {
     this.router.navigate(['/cart']);
   }
 
-  placeOrder() {
+  createOrderSession() {
     this.isSubmitted = true;
     if (this.checkoutFormGroup.invalid) {
       return;
     }
+    this.isLoading = true;
     const order: Order = {
       orderItems: this.orderItems,
       address: {
@@ -112,20 +116,46 @@ export class CheckoutComponent implements OnInit {
         phone: this.f['phone'].value
       },
       status: Object.keys(ORDER_STATUS)[0],
-      userId: this.userId,
+      userId: 'userIdwillautomaticallycreatedonserver',
       _id: 'userIdwillautomaticallycreatedonserver',
       dateOrdered: `${Date.now()}`
     };
-    this.ordersService.postOrder(order).subscribe(
-      (res) => {
+
+    this.ordersService.createOrderSession(order).pipe(
+      switchMap(session => {
+        return this.stripeService.redirectToCheckout({ sessionId: session.sessionId })
+      })
+    ).subscribe(
+      (result ) => {
+        this.placeOrder(order);
+        console.log(result);
         //redirect to thank you page // payment
-        this.cartService.emptyCart();
-        this.cartService.serverCart$.next({ totalPrice: 0, quantity: 0 });
-        this.router.navigate(['/success']);
+        this.isLoading = false;
       },
       (err) => {
         //display some message to user
         this._errorHandler(err);
+        this.isLoading = false;
+      }
+    );
+
+
+  }
+
+  placeOrder(order: Order) {
+    this.ordersService.postOrder(order).subscribe(
+      (res) => {
+        console.log(res)
+        //redirect to thank you page // payment
+        this.cartService.emptyCart();
+        this.cartService.serverCart$.next({ totalPrice: 0, quantity: 0 });
+        this.router.navigate(['/success']);
+        this.isLoading = false;
+      },
+      (err) => {
+        //display some message to user
+        this._errorHandler(err);
+        this.isLoading = false;
       }
     );
   }
@@ -138,7 +168,7 @@ export class CheckoutComponent implements OnInit {
     if (err.error['message']) {
       this.serverErrMsg = err.error['message'];
     } else {
-      this.serverErrMsg = 'An error occured. Please try again!';
+      this.serverErrMsg = 'Error while placing order. Please try again!';
     }
   }
 }

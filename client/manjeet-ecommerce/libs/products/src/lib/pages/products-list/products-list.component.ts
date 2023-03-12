@@ -63,9 +63,11 @@ export class ProductsListComponent implements OnInit {
             this.products = res['products'];
           }
           this.isLoadingProducts = false;
+          this.isLoadingCategories = false;
           this.serverErrMsg = '';
         }, err => {
           this.isLoadingProducts = false;
+          this.isLoadingCategories = false;
           this._errorHandler(err);
         })
       }
@@ -79,9 +81,11 @@ export class ProductsListComponent implements OnInit {
             this.products = res['products'];
           }
           this.isLoadingProducts = false;
+          this.isLoadingCategories = false;
           this.serverErrMsg = '';
         }, err => {
           this.isLoadingProducts = false;
+          this.isLoadingCategories = false;
           this._errorHandler(err);
         })
       }
@@ -101,7 +105,7 @@ export class ProductsListComponent implements OnInit {
   }
 
   categoryFilter() {
-    this.isLoadingProducts = true;
+    this.isLoadingCategories = true;
     const selectedCategories = this.categories.filter(category => category.checked).map(category => category._id);
     this.router.navigate([`/products`], {queryParams: {categories: selectedCategories}});
     // this._getProducts();

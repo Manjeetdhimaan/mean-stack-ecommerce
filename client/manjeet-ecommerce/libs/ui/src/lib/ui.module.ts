@@ -11,6 +11,6 @@ import { GalleryComponent } from './components/gallery/gallery.component';
 @NgModule({
   imports: [CommonModule, ButtonModule, GalleriaModule],
   declarations: [BannerComponent, SliderComponent, GalleryComponent],
-  exports: [BannerComponent, SliderComponent, GalleryComponent],
+  exports: [BannerComponent, SliderComponent, GalleryComponent]
 })
 export class UiModule {}

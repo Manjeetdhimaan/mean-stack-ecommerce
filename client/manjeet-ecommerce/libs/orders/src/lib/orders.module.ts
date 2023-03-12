@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { NgxStripeModule } from 'ngx-stripe';
 
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
@@ -9,6 +10,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';
 import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 import { ordersRoutes } from './lib.routes';
 import { CartIconComponent } from './components/cart-icon/cart-icon.component';
@@ -17,12 +19,10 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OrderSummaryComponent } from './components/order-summary/order-summary.component';
 import { CheckoutComponent } from './pages/checkout/checkout.component';
 import { ThanksComponent } from './pages/thanks/thanks.component';
-import { MessageService } from 'primeng/api';
 
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forRoot(ordersRoutes),
     BadgeModule,
     ButtonModule,
     InputNumberModule,
@@ -31,21 +31,20 @@ import { MessageService } from 'primeng/api';
     DropdownModule,
     InputTextModule,
     InputMaskModule,
-    ToastModule
+    ToastModule,
+    RouterModule.forRoot(ordersRoutes),
+    NgxStripeModule.forRoot('pk_test_51Mkl8USHSaj2D0AU1gNSXyfTaJEF8ED76yYPZfHD9hKVBCYZMqTbrOoD8QHtpkusdMqnwQYv9clrrTSDnYbvTCqq00Tphb5Q2v')
   ],
   declarations: [
     CartIconComponent,
     CartComponent,
     OrderSummaryComponent,
     CheckoutComponent,
-    ThanksComponent,
+    ThanksComponent
   ],
   exports: [
     CartIconComponent,
-    CartComponent,
-    OrderSummaryComponent,
-    CheckoutComponent,
-    ThanksComponent,
+    CartComponent
   ],
   providers: [MessageService]
 })

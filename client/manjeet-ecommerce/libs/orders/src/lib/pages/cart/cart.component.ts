@@ -55,7 +55,7 @@ export class CartComponent implements OnInit {
     this.isLoading = true;
     const fetchedCart = localStorage.getItem(CART_KEY);
     // if cart is present in localstorage, store that in user account and clear localstorage cart
-    if (fetchedCart) {
+    if (fetchedCart && JSON.parse(fetchedCart).items.length >0) {
       const cart = JSON.parse(fetchedCart);
       this.cartService.postMultipleCart(cart).subscribe(res => {
         this.cartService.emptyCart();
@@ -64,11 +64,11 @@ export class CartComponent implements OnInit {
           res.products.forEach((product: any) => {
             this.totalPrice += +product.productId.price * +product.quantity;
             this.quantity += +product.quantity;
-            this.cartService.serverCart$.next({ totalPrice: +this.totalPrice, quantity: this.quantity });
             this.cartItems.push({
               product: product.productId,
               quantity: product.quantity
             });
+            this.cartService.serverCart$.next({ totalPrice: +this.totalPrice, quantity: this.quantity });
           })
         }, err => {
           this.isLoading = false;
@@ -81,8 +81,8 @@ export class CartComponent implements OnInit {
     }
     else {
       this.cartService.getCartFromServer().subscribe(res => {
+        this.isLoading = false;
         res.products.map(product => {
-          this.isLoading = false;
           this.totalPrice += +product.productId.price * +product.quantity;
           this.quantity += +product.quantity;
         })

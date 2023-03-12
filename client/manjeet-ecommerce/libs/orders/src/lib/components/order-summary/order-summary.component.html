@@ -16,7 +16,7 @@
       <i *ngIf="isLoading" class="pi pi-spin pi-spinner"></i>
     </div>
     <div class="checkout-button" *ngIf="!isCheckout">
-      <p-button label="Checkout" [loading]="isLoading" routerLink="/checkout"></p-button>
+      <p-button label="Checkout" [loading]="isLoading" (onClick)="onCheckOut()"></p-button>
     </div>
   </div>
 </div>

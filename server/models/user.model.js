@@ -75,6 +75,7 @@ userSchema.methods.addToCart = function (product, productQuantity, increaseQuant
         }
         updatedCartItems[cartProductIndex].quantity = newQuantity;
     } else {
+        newQuantity = productQuantity ? +productQuantity : newQuantity;
         updatedCartItems.push({
             productId: product._id,
             quantity: newQuantity

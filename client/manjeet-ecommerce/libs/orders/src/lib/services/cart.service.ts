@@ -5,6 +5,7 @@ import { environment } from '@env/environment';
 import { HttpClient } from '@angular/common/http';
 import { CartItem, Cart } from '../models/cart.model';
 import { ServerResponse } from '@manjeet-ecommerce/products';
+import { AuthService } from '@manjeet-ecommerce/users';
 
 export const CART_KEY = 'cart';
 
@@ -29,7 +30,10 @@ export class CartService {
   userBaseUrl = `${environment.apiBaseUrl}/users`;
   cart$: BehaviorSubject<Cart> = new BehaviorSubject(this.getCartItemsFromLocalStorage());
   serverCart$: BehaviorSubject<{totalPrice: number, quantity: number}> = new BehaviorSubject({totalPrice: 0, quantity: 0});
-  constructor(private http: HttpClient) { }
+
+  constructor(private http: HttpClient, private authService: AuthService) {
+     this.getInitialCart();
+   }
 
   // localstorage cart handling if user is not logged in
   initCartLocalStorage() {
@@ -112,4 +116,20 @@ export class CartService {
   getCartFromServer():Observable<CartResponse> {
     return this.http.get<CartResponse>(`${this.userBaseUrl}/get-user-cart`);
   }
+
+  getInitialCart() {
+    if (this.authService.isUserLoggedIn()) {
+      this.getCartFromServer().subscribe(res => {
+        let cartCount = 0
+        res.products.map(product => {
+          cartCount += +product.quantity;
+        });
+        this.serverCart$.next({totalPrice: 0, quantity: +cartCount})
+      }, err => {
+        console.log(err)
+      });
+    }
+  }
+
+
 }
