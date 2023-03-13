@@ -51,6 +51,15 @@ const orderSchema = new mongoose.Schema({
     dateOrdered: {
         type: Date,
         default: Date.now
+    },
+    paymentStatus: {
+        type: String,
+        required: true,
+        default: 'Pending'
+    },
+    orderSessionId: {
+        type: String || null,
+        trim: true
     }
 }, {
     timestamps: true

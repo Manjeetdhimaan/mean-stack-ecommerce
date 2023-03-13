@@ -20,3 +20,23 @@ export const ORDER_STATUS: any = {
     color: 'danger'
   },
 }
+
+
+export const PAYMENT_STATUS: any = {
+  Pending: {
+    label: 'Pending',
+    color: 'warning'
+  },
+  Success: {
+    label: 'Success',
+    color: 'success'
+  },
+  Refunded: {
+    label: 'Refunded',
+    color: 'primary'
+  },
+  Failed: {
+    label: 'Failed',
+    color: 'danger'
+  },
+}

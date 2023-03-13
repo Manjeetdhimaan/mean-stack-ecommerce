@@ -54,6 +54,11 @@ export class OrderService {
     return this.http.post<ServerResponse>(`${this.orderBaseUrl}/post-order`, orderBody);
   }
 
+
+  confirmOrder(orderSessionId: string):Observable<ServerResponse> {
+    return this.http.post<ServerResponse>(`${this.orderBaseUrl}/confirm-order`, {orderSessionId: orderSessionId});
+  }
+
   updateOrderStatus(orderId: string, orderStatusBody: {status: string}):Observable<OrderResponse> {
     return this.http.put<OrderResponse>(`${this.orderBaseUrl}/update-order-status/${orderId}`, orderStatusBody);
   }

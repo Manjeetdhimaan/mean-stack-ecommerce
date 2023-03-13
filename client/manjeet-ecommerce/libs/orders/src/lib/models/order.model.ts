@@ -16,9 +16,11 @@ export class Order {
     public dateOrdered: string,
     public userId: string,
     public _id: string,
+    public paymentStatus: string,
     public user?: User,
     public currency?: string,
     public totalPrice?: number,
     public id?: string,
+    public sessionId?: string,
   ) { }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { MessageService } from 'primeng/api';
 
-import { Order, OrderResponse, OrderService } from '@manjeet-ecommerce/orders';
+import { Order, OrderResponse, OrderService, PAYMENT_STATUS } from '@manjeet-ecommerce/orders';
 import { ORDER_STATUS } from '../order.contants';
 
 @Component({
@@ -18,6 +18,7 @@ export class OrderDetailComponent implements OnInit {
   order: Order;
   selectedOrderStatus: string;
   orderStatuses:any = [];
+  paymentStatus = PAYMENT_STATUS;
 
   constructor( private orderService: OrderService, private messageService: MessageService, private activatedRoute: ActivatedRoute ) {}
 

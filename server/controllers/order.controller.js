@@ -198,8 +198,85 @@ module.exports.postOrder = async (req, res, next) => {
                 phone: req.body.address.phone
             },
             totalPrice: totalPrice,
-            user: req._id ? req._id : req.body.userId
+            user: req._id ? req._id : req.body.userId,
+            paymentStatus: 'Pending',
+            orderSessionId: req.body.sessionId
         });
+
+        order.save().then((savedOrder) => {
+            if (!savedOrder) {
+                return res.status(503).send({
+                    success: false,
+                    message: 'Order can not be placed! Please try again.'
+                });
+            }
+            return res.status(201).send({
+                success: true,
+                message: 'Order placed succussfully!'
+            });
+        }).catch(err => {
+            return next(err);
+        })
+    } catch (err) {
+        return next(err);
+    }
+};
+
+module.exports.createOrderSession = async (req, res, next) => {
+    const orderItems = req.body.orderItems;
+    if (!orderItems) {
+        return res.status(400).json({
+            success: false,
+            message: 'Please check your order items'
+        })
+    }
+
+    const lineItems = await Promise.all(
+        orderItems.map(async (orderItem) => {
+            const product = await Product.findById(orderItem.productId._id);
+            return {
+                price_data: {
+                    currency: 'INR',
+                    product_data: {
+                        name: product.name,
+                    },
+                    unit_amount: +product.price * 100
+                },
+                quantity: +orderItem.quantity,
+            }
+        })
+    );
+
+    const session = await stripe.checkout.sessions.create({
+        line_items: lineItems,
+        payment_method_types: ['card'],
+        mode: 'payment',
+        success_url: 'http://localhost:4200/success',
+        cancel_url: 'http://localhost:4200/cart',
+    });
+    return res.status(200).json({
+        success: true,
+        message: 'Creating order',
+        sessionId: session.id
+    });
+}
+
+module.exports.confirmOrder = async (req, res, next) => {
+    try {
+        const user = await User.findById(req._id);
+
+        const order = await Order.findOne({
+            orderSessionId: req.body.orderSessionId
+        });
+
+        if (!order || !user) {
+            return res.status(404).json({
+                success: false,
+                message: 'Order id or User not found'
+            })
+        }
+
+        order.paymentStatus = "Success";
 
         order.save().then((savedOrder) => {
             if (!savedOrder) {
@@ -215,50 +292,12 @@ module.exports.postOrder = async (req, res, next) => {
                 message: 'Order placed succussfully!'
             });
         }).catch(err => {
-            return next(err);   
+            return next(err);
         })
     } catch (err) {
         return next(err);
     }
 };
-
-module.exports.createOrderSession = async (req, res, next) => {
-    const orderItems = req.body.orderItems;
-    if(!orderItems) {
-        return res.status(400).json({
-            success: false,
-            message: 'Please check your order items'
-        })
-    }
-
-    const lineItems = await Promise.all(
-        orderItems.map(async (orderItem) => {
-            const product = await Product.findById(orderItem.productId._id);
-            return {
-                price_data: {
-                  currency: 'INR',
-                  product_data: {
-                    name: product.name,
-                  },
-                  unit_amount: +product.price * 100,
-                },
-                quantity: +orderItem.quantity,
-              }
-        })
-    );
-
-    const session = await stripe.checkout.sessions.create({
-        line_items: lineItems,
-        mode: 'payment',
-        success_url: 'http://localhost:4200/success',
-        cancel_url: 'http://localhost:4200/cart',
-      });
-    return res.status(200).json({
-        success: true,
-        message: 'Creating order',
-        sessionId: session.id
-    });
-}
 
 module.exports.updateOrderStatus = (req, res, next) => {
     try {

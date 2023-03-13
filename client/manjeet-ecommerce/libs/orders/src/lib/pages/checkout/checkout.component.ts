@@ -42,6 +42,7 @@ export class CheckoutComponent implements OnInit {
     this._getCartItems();
     this._getCountries();
     this._getUserProfile();
+    localStorage.removeItem('sessionOrderId');
   }
 
   private _initCheckoutForm() {
@@ -118,16 +119,22 @@ export class CheckoutComponent implements OnInit {
       status: Object.keys(ORDER_STATUS)[0],
       userId: 'userIdwillautomaticallycreatedonserver',
       _id: 'userIdwillautomaticallycreatedonserver',
+      paymentStatus: 'Pending',
       dateOrdered: `${Date.now()}`
     };
 
     this.ordersService.createOrderSession(order).pipe(
       switchMap(session => {
+        if (session.sessionId) {
+          order.sessionId = session.sessionId;
+          this.placeOrder(order);
+          localStorage.setItem('sessionOrderId', JSON.stringify(session.sessionId));
+        }
         return this.stripeService.redirectToCheckout({ sessionId: session.sessionId })
       })
     ).subscribe(
-      (result ) => {
-        this.placeOrder(order);
+      (result) => {
+
         console.log(result);
         //redirect to thank you page // payment
         this.isLoading = false;
@@ -145,11 +152,9 @@ export class CheckoutComponent implements OnInit {
   placeOrder(order: Order) {
     this.ordersService.postOrder(order).subscribe(
       (res) => {
-        console.log(res)
         //redirect to thank you page // payment
         this.cartService.emptyCart();
         this.cartService.serverCart$.next({ totalPrice: 0, quantity: 0 });
-        this.router.navigate(['/success']);
         this.isLoading = false;
       },
       (err) => {
@@ -161,14 +166,14 @@ export class CheckoutComponent implements OnInit {
   }
 
   get f() {
-    return this.checkoutFormGroup.controls;
-  }
+      return this.checkoutFormGroup.controls;
+    }
 
   private _errorHandler(err: HttpErrorResponse) {
-    if (err.error['message']) {
-      this.serverErrMsg = err.error['message'];
-    } else {
-      this.serverErrMsg = 'Error while placing order. Please try again!';
-    }
+      if(err.error['message']) {
+        this.serverErrMsg = err.error['message'];
+  } else {
+  this.serverErrMsg = 'Error while placing order. Please try again!';
+}
   }
 }
