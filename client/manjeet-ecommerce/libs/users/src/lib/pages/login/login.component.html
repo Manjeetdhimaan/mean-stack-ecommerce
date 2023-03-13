@@ -7,6 +7,7 @@
       <div class="col-6 p-5">
         <h3>Welcome</h3>
         <h2>Login Page</h2>
+        <h3 *ngIf="isUserChecking">Login to continue checkout</h3>
         <form [formGroup]="loginForm" (ngSubmit)="onSubmitForm()">
           <div class="grid">
             <div class="col-12">

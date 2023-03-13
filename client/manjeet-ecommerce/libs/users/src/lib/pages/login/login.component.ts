@@ -19,10 +19,12 @@ export class LoginComponent implements OnInit {
   isLoading = false;
   totalPrice: number = 0;
   quantity: number = 0;
+  isUserChecking = false;
 
   constructor( private authService: AuthService, private router: Router, private cartService: CartService ) {}
 
   ngOnInit(): void {
+      this.isUserChecking = this.authService.isUserCheckingOut ? true : false;
       this._initForm();
   }
 
@@ -53,7 +55,7 @@ export class LoginComponent implements OnInit {
         if(res.success) {
           this.authService.setToken(res['token']);
           this.authService.isUserLoggedIn$.next(this.authService.isUserLoggedIn());
-          this.authService.isUserCheckingOut ? this.router.navigate(['/checkout']) : this.router.navigate(['/']);
+          this.authService.isUserCheckingOut ? this.router.navigate(['/cart']) : this.router.navigate(['/']);
           this.authService.isUserCheckingOut = false;
 
           const fetchedCart = localStorage.getItem(CART_KEY);

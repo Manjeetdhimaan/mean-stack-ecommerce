@@ -1,17 +1,118 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { animate, group, keyframes, query, stagger, state, style, transition, trigger } from '@angular/animations';
 import { take } from 'rxjs';
+import { MessageService } from 'primeng/api';
 
-import { ProductService, ServerResponse } from '@manjeet-ecommerce/products';
+import { ProductService } from '@manjeet-ecommerce/products';
+import { AuthService } from '@manjeet-ecommerce/users';
 import { CartProduct } from '../../models/cart.model';
 import { CartService, CART_KEY, PostCartResponse } from '../../services/cart.service';
-import { AuthService } from '@manjeet-ecommerce/users';
-import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'orders-cart',
   templateUrl: './cart.component.html',
   styles: [],
+  animations: [
+    trigger('list1', [
+      state('in', style({
+        opacity: 1,
+        transform: 'translateX(0)'
+      })),
+      transition('void => *', [
+        style({
+          opacity: 0,
+          transform: 'translateX(-100px)'
+        }),
+        animate(300)
+      ]),
+      transition('* => void', [
+        animate(300, style({
+          transform: 'translateX(100px)',
+          opacity: 0
+        }))
+      ])
+    ]),
+    trigger('list2', [
+      state('in', style({
+        opacity: 1,
+        transform: 'translateX(0)'
+      })),
+      transition('void => *', [
+        animate(1000, keyframes([
+          style({
+            transform: 'translateY(-100px)',
+            opacity: 0,
+            offset: 0
+          }),
+          style({
+            transform: 'translateY(-50px)',
+            opacity: 0.5,
+            offset: 0.3
+          }),
+          style({
+            transform: 'translateY(-20px)',
+            opacity: 1,
+            offset: 0.8
+          }),
+          style({
+            transform: 'translateY(0px)',
+            opacity: 1,
+            offset: 1
+          })
+        ]))
+      ]),
+      transition('* => void', [
+        group([
+          animate(300, style({
+            color: 'red'
+          })),
+          animate(800, style({
+            transform: 'translateX(100px)',
+            opacity: 0
+          }))
+        ])
+      ])
+    ]),
+    trigger('listAnimation', [
+      transition('* => *', [ // each time the binding value changes
+        query(':leave', [
+          stagger(100, [
+            animate('0.5s', style({ opacity: 0 }))
+          ])
+        ], { optional: true }),
+        query(':enter', [
+          style({ opacity: 0 }),
+          stagger(100, [
+            animate('0.5s', style({ opacity: 1 }))
+          ])
+        ], { optional: true })
+      ])
+    ]),
+    trigger("slide", [
+      transition("* => *", [
+        style({ transform: "translateY(100%)", opacity: 0 }),
+        animate(2000, style({ transform: "translateY(-100%)", opacity: 1 }))
+      ])
+    ]),
+    trigger("enterSlide", [
+      transition("* => *", [
+        // each time the binding value changes
+        query(
+          ":enter",
+          [
+            stagger(2000, [
+              style({ transform: "translateY(100%)", opacity: 0 }),
+              animate(2000, style({ transform: "translateY(-100%)", opacity: 1 }))
+            ])
+          ],
+          {
+            optional: true
+          }
+        )
+      ])
+    ])
+  ]
 })
 export class CartComponent implements OnInit {
 
