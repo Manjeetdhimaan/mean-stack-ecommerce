@@ -128,7 +128,6 @@ export class CheckoutComponent implements OnInit {
         if (session.sessionId) {
           order.sessionId = session.sessionId;
           this.placeOrder(order);
-          localStorage.setItem('sessionOrderId', JSON.stringify(session.sessionId));
         }
         return this.stripeService.redirectToCheckout({ sessionId: session.sessionId })
       })

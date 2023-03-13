@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { OrderService } from '../../services/order.service';
 
@@ -9,18 +10,27 @@ import { OrderService } from '../../services/order.service';
 })
 export class ThanksComponent implements OnInit {
 
-  constructor( private orderService: OrderService, private messageService: MessageService) {}
+  isSuccessFromServer = false;
+  isLoading = false;
+
+  constructor(private orderService: OrderService, private messageService: MessageService, private activatedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
-      const sesionId = localStorage.getItem('sessionOrderId');
-      if(sesionId) {
-        const parsedSessionID = JSON.parse(sesionId);
-        this.orderService.confirmOrder(parsedSessionID).subscribe(res => {
+    this.isLoading = true;
+    this.activatedRoute.queryParams.subscribe((params: Params) => {
+      if (params['session_id']) {
+        this.orderService.confirmOrder(params['session_id']).subscribe(res => {
+          if(res.success) {
+            this.isSuccessFromServer = true;
+          }
+          this.isLoading = false;
           this.messageService.add({ severity: 'success', summary: 'Success', detail: res['message'] });
-          localStorage.removeItem('sessionOrderId');
         }, err => {
+          this.isSuccessFromServer = false;
+          this.isLoading = false;
           this.messageService.add({ severity: 'success', summary: 'Success', detail: err.error['message'] });
         })
       }
+    })
   }
 }

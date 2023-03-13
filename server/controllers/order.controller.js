@@ -6,6 +6,8 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET || devEnv.STRIPE_SECR
 const Order = mongoose.model('Order');
 const OrderItem = mongoose.model('OrderItem');
 const User = mongoose.model('User');
+const { generateOTP } = require('../util/otp.util');
+let otp;
 
 module.exports.getOrders = (req, res, next) => {
     try {
@@ -186,6 +188,7 @@ module.exports.postOrder = async (req, res, next) => {
         // });
 
         const totalPrice = totalPrices.reduce((a, b) => a + b, 0);
+        otp = generateOTP(8);
 
         const order = new Order({
             orderItems: orderItemIdsResolved,
@@ -251,7 +254,7 @@ module.exports.createOrderSession = async (req, res, next) => {
         line_items: lineItems,
         payment_method_types: ['card'],
         mode: 'payment',
-        success_url: 'http://localhost:4200/success',
+        success_url: 'http://localhost:4200/success?session_id={CHECKOUT_SESSION_ID}',
         cancel_url: 'http://localhost:4200/cart',
     });
     return res.status(200).json({
