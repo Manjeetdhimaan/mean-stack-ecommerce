@@ -58,6 +58,10 @@ export class ProductService {
     return this.http.put<ServerResponse>(`${this.productBaseUrl}/update-product/${productId}`, productBody);
   }
 
+  updateGalleryOfProduct(productId: string, productBody: FormData): Observable<ServerResponse> {
+    return this.http.put<ServerResponse>(`${this.productBaseUrl}//update-product-gallery/${productId}`, productBody);
+  }
+
   deleteProduct(productId: string): Observable<ServerResponse> {
     return this.http.delete<ServerResponse>(`${this.productBaseUrl}/delete-product/${productId}`);
   }

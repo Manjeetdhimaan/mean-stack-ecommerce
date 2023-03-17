@@ -224,7 +224,6 @@ export class CartComponent implements OnInit {
         this.isLoading = false;
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Cart Updated' });
       }, err => {
-        console.log(err)
         this.isLoading = false;
         this._errorHandler(err);
       })

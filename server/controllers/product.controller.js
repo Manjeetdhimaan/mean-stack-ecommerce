@@ -146,9 +146,9 @@ module.exports.updateProduct = async (req, res, next) => {
                 if (imagePath) {
                     founededProduct.image = imagePath;
                 }
-                if (req.body.images) {
-                    founededProduct.images = req.body.images;
-                }
+                // if (req.body.images) {
+                //     founededProduct.images = req.body.images;
+                // }
                 if (req.body.brand) {
                     founededProduct.brand = req.body.brand;
                 }
@@ -203,7 +203,7 @@ module.exports.updateProductGallery = async (req, res, next) => {
                 message: 'Invalid Product Id'
             })
         }
-        Product.findByIdAndUpdate(req.params.id).then((founededProduct) => {
+        Product.findByIdAndUpdate(req.params.id).then(async (founededProduct) => {
             if (!founededProduct) {
                 return res.status(404).send({
                     success: false,
@@ -211,13 +211,14 @@ module.exports.updateProductGallery = async (req, res, next) => {
                 });
             } else {
                 let imagePaths = [];
-                const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`
+                const basePath = `${req.protocol}://${req.get('host')}/public/uploads/`;
                 if (req.files) {
-                    req.files.map(file => {
+                    await req.files.map(file => {
                         imagePaths.push(basePath + file.filename);
-                    })
+                    });
                 }
-                    founededProduct.images = imagePaths;
+                    // founededProduct.images = imagePaths;
+                    founededProduct.images = founededProduct.images.concat(imagePaths);
             };
             founededProduct.save().then((savedProduct) => {
                 if (!savedProduct) {

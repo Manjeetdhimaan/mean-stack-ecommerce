@@ -121,6 +121,21 @@
         </div>
       </div>
     </form>
+    <form [formGroup]="productGalleryForm" (ngSubmit)="onSubmitGalleryForm()" *ngIf="editMode && !isLoading">
+    <div class="field col-12">
+      <label for="image">Product Gallery</label>
+      <input type="file" (change)="onGalleyImagesSelect($event)" class="p-inputtext block w-full"
+        accept="image/*" multiple id="image">
+      <!-- <p-fileUpload for="image"
+        accept="image/*" [maxFileSize]="1000000"></p-fileUpload> -->
+        <div *ngIf="images && images.length > 0" class="col-12 mt-2 pl-0">
+          <img *ngFor="let img of images" [src]="img" alt="product image" width="20%" class="m-4" />
+        </div>
+    </div>
+    <p-button [label]="editMode ? 'Upload' : 'Create'" icon="pi pi-plus"
+                styleClass="p-button-primary mr-2" type="submit"></p-button>
+  </form>
+
     <div class="loading">
       <p *ngIf="isLoading && !isError">Loading...</p>
       <p *ngIf="!isLoading && isError">An error occured while adding

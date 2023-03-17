@@ -20,9 +20,11 @@ export class ProductsEditComponent implements OnInit {
   isLoading = false;
   isError = false;
   productForm: FormGroup;
+  productGalleryForm: FormGroup;
   categories: Category[] = [];
   imagePreview: string | ArrayBuffer;
-  productId: string
+  productId: string;
+  images: string[] = [];
 
   constructor(private fb: FormBuilder, private categoryService: CategoriesService, private messageService: MessageService, private productService: ProductService, private location: Location, private activatedRoute: ActivatedRoute) { }
 
@@ -59,7 +61,12 @@ export class ProductsEditComponent implements OnInit {
       description: new FormControl(null, [Validators.required]),
       richDescription: new FormControl(null),
       image: new FormControl(null, [Validators.required]),
+      images: new FormControl(null),
       isFeatured: new FormControl(false),
+    });
+
+    this.productGalleryForm = this.fb.group({
+      images: new FormControl(null)
     })
   }
 
@@ -114,6 +121,7 @@ export class ProductsEditComponent implements OnInit {
         isFeatured: res.product.isFeatured
       });
       this.imagePreview = res.product.image;
+      this.images = res.product.images;
       this.isLoading = false;
       this.isError = false;
     }, err => {
@@ -173,6 +181,61 @@ export class ProductsEditComponent implements OnInit {
         this.imagePreview = fileReader.result as string;
       }
       fileReader.readAsDataURL(file);
+    }
+  }
+
+  onGalleyImagesSelect(event: Event) {
+    const files = (event.target as HTMLInputElement).files;
+    if (files) {
+      this.productGalleryForm.patchValue({
+        images: files
+      });
+      this.productGalleryForm.get('images')?.updateValueAndValidity();
+
+      for (let i = 0; i <= files.length; i++) {
+        const fileReader = new FileReader();
+        fileReader.onloadend = () => {
+          this.images.push(fileReader.result as string);
+        }
+        if(files[i]){
+          fileReader.readAsDataURL(files[i]);
+        }
+      }
+    }
+  }
+
+  private _updateGalleryOfProduct(product: FormData) {
+    this.productService.updateGalleryOfProduct(this.productId, product).subscribe(
+      (res: SuccessResponse) => {
+        this.isLoading = false;
+        this.isError = false;
+        if (res.success) {
+          this.messageService.add({ severity: 'success', summary: 'Success', detail: res['message'] });
+          // this.router.navigate(['/categories']);
+          // timer(1000).toPromise().then(() => {
+          //   this.location.back();
+          // })
+        }
+      },
+      (err) => {
+        this.isLoading = false;
+        this.isError = true;
+        this._errorHandler(err);
+      }
+    );
+  }
+
+  onSubmitGalleryForm() {
+    this.submitted = true;
+    if (!this.productGalleryForm.valid) return;
+    this.isLoading = true;
+    const productFormData = new FormData();
+    const filesLength: number = this.productGalleryForm.controls['images'].value.length;
+    for (let i = 0; i <= filesLength; i++) {
+      productFormData.append('images', this.productGalleryForm.controls['images'].value[i]);
+    }
+    if (this.editMode) {
+      this._updateGalleryOfProduct(productFormData);
     }
   }
 
