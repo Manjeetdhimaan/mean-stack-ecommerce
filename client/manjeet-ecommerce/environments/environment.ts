@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   apiBaseUrl: 'http://localhost:3000/api/v1',
-  domain: 'http://localhost:3000'
+  domain: window.location.protocol + "//" +window.location.host
 };
 
 /*

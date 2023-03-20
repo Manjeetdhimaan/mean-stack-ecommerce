@@ -226,7 +226,7 @@ module.exports.postOrder = async (req, res, next) => {
 };
 
 module.exports.createOrderSession = async (req, res, next) => {
-    const orderItems = req.body.orderItems;
+    const orderItems = req.body.orderBody.orderItems;
     if (!orderItems) {
         return res.status(400).json({
             success: false,
@@ -245,7 +245,7 @@ module.exports.createOrderSession = async (req, res, next) => {
                     },
                     unit_amount: +product.price * 100
                 },
-                quantity: +orderItem.quantity,
+                quantity: +orderItem.quantity
             }
         })
     );
@@ -254,8 +254,8 @@ module.exports.createOrderSession = async (req, res, next) => {
         line_items: lineItems,
         payment_method_types: ['card'],
         mode: 'payment',
-        success_url: 'http://localhost:4200/success?session_id={CHECKOUT_SESSION_ID}',
-        cancel_url: 'http://localhost:4200/cart',
+        success_url: req.body.domain + '/success?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url: req.body.domain + '/cart',
     });
     return res.status(200).json({
         success: true,

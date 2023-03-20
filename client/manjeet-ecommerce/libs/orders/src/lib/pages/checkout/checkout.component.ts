@@ -11,6 +11,7 @@ import { Order } from '../../models/order.model';
 import { CartService } from '../../services/cart.service';
 import { OrderService } from '../../services/order.service';
 import { switchMap } from 'rxjs';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'orders-checkout',
@@ -123,7 +124,9 @@ export class CheckoutComponent implements OnInit {
       dateOrdered: `${Date.now()}`
     };
 
-    this.ordersService.createOrderSession(order).pipe(
+    const domain = environment.domain;
+    const ord = Object.assign({}, {order, domain: domain});
+    this.ordersService.createOrderSession(order, domain).pipe(
       switchMap(session => {
         if (session.sessionId) {
           order.sessionId = session.sessionId;
@@ -144,8 +147,6 @@ export class CheckoutComponent implements OnInit {
         this.isLoading = false;
       }
     );
-
-
   }
 
   placeOrder(order: Order) {

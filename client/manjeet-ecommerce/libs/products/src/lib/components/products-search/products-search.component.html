@@ -1,4 +1,16 @@
 <div class="products-search">
   <i class="pi pi-search"></i>
-  <input type="text" id="searh" name="search" class="products-search-input" placeholder="Find Products">
+  <input type="text" id="searh" [(ngModel)]="searchText" name="search" class="products-search-input" (keyup)="onSearchProducts($event)" placeholder="Find Products">
+  <i class="pi pi-times-circle p-text-secondary" *ngIf="products.length > 0" (click)="onSearchProducts($event, true)" style="cursor: pointer;"></i>
+</div>
+<div class="products-search-list">
+  <ul [@list2] *ngIf="products.length > 0">
+    <li>Resuktusausushuhuhdu</li>
+    <li>Resukt</li>
+    <li>Resukt</li>
+    <li>Resukt</li>
+    <li>Resukt</li>
+  </ul>
+</div>
+<div class="products-search-backdrop" (click)="onSearchProducts($event, true)" [@fadeIn] *ngIf="products.length > 0">
 </div>

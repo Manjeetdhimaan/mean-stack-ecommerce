@@ -8,6 +8,7 @@ import { ProductService } from '@manjeet-ecommerce/products';
 import { AuthService } from '@manjeet-ecommerce/users';
 import { CartProduct } from '../../models/cart.model';
 import { CartService, CART_KEY, PostCartResponse } from '../../services/cart.service';
+import { environment } from '@env/environment';
 
 @Component({
   selector: 'orders-cart',

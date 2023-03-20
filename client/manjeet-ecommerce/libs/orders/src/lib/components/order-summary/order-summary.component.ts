@@ -20,7 +20,7 @@ export class OrderSummaryComponent implements OnInit, OnDestroy {
   totalPrice: number;
   isCheckout = false;
   currency: string = 'INR';
-  serverErrMsg: String;
+  serverErrMsg: string;
   isLoading = false;
 
   constructor(

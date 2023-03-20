@@ -28,8 +28,8 @@ export class ProductService {
 
   constructor(private http: HttpClient) { }
 
-  getProducts(categoriesFilter?: string[], productsIds?: string[]): Observable<ProductsResponse> {
-    let params = new HttpParams();
+  getProducts(categoriesFilter?: string[], productsIds?: string[], searchStr?: string): Observable<ProductsResponse> {
+    // let params = new HttpParams();
     if(categoriesFilter) {
       // params = params.append('categories', categoriesFilter.join(','))
       // or below approach //
@@ -37,6 +37,9 @@ export class ProductService {
     }
     if(productsIds) {
       return this.http.get<ProductsResponse>(`${this.productBaseUrl}/get-products?productsIds=${productsIds}`);
+    }
+    if(searchStr) {
+      return this.http.get<ProductsResponse>(`${this.productBaseUrl}/get-products?search=${searchStr}`);
     }
     // return this.http.get<ProductsResponse>(`${this.productBaseUrl}/get-products`, {params: params});
     return this.http.get<ProductsResponse>(`${this.productBaseUrl}/get-products`);

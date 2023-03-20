@@ -46,14 +46,14 @@ export class OrderService {
   }
 
 
-  createOrderSession(orderBody: Order):Observable<OrderSessionResponse> {
-    return this.http.post<OrderSessionResponse>(`${this.orderBaseUrl}/create-order-session`, orderBody);
+  createOrderSession(orderBody: Order, domain: string):Observable<OrderSessionResponse> {
+    const order = Object.assign({}, {orderBody, domain: domain})
+    return this.http.post<OrderSessionResponse>(`${this.orderBaseUrl}/create-order-session`, order);
   }
 
   postOrder(orderBody: Order):Observable<ServerResponse> {
     return this.http.post<ServerResponse>(`${this.orderBaseUrl}/post-order`, orderBody);
   }
-
 
   confirmOrder(orderSessionId: string):Observable<ServerResponse> {
     return this.http.post<ServerResponse>(`${this.orderBaseUrl}/confirm-order`, {orderSessionId: orderSessionId});

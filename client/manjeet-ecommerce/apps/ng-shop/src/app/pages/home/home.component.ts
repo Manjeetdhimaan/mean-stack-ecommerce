@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'manjeet-ecommerce-home',
+  selector: 'ngshop-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })

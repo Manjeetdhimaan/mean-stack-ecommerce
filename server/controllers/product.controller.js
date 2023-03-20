@@ -12,6 +12,9 @@ module.exports.getProducts = (req, res, next) => {
         if(req.query.productsIds) {
             filter = {"_id" : {"$in" : req.query.productsIds.split(',')}}
         }
+        if(req.query.search) {
+            filter = {"_id" : {"$in" : req.query.search.split(',')}}
+        }
         Product.find(filter).select('name price image currency').populate('category', 'name').then(products => {
             if (!products || products.length < 1) {
                 return res.status(203).json({

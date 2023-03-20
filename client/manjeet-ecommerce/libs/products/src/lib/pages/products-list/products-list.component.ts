@@ -94,7 +94,6 @@ export class ProductsListComponent implements OnInit {
 
   private _errorHandler(err: HttpErrorResponse) {
     if (err.error['message']) {
-      console.log(err)
       if (err.error['message'] === 'No Products found' && err.status === 404) {
         this.products = [];
       }
