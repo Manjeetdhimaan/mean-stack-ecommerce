@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { Product } from '../../models/product.model';
@@ -21,9 +21,10 @@ export class ProductDetailsComponent implements OnInit {
   isLoadingCart = false;
   serverErrMsg: string;
 
-  constructor(private productService: ProductService, private activatedRoute: ActivatedRoute, private cartService: CartService, private authService: AuthService, private messageService: MessageService) { }
+  constructor(private productService: ProductService, private activatedRoute: ActivatedRoute, private cartService: CartService, private authService: AuthService, private messageService: MessageService, private router: Router) { }
 
   ngOnInit(): void {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.activatedRoute.params.subscribe((params: Params) => {
       if (params['productId']) {
         this._getProduct(params['productId']);

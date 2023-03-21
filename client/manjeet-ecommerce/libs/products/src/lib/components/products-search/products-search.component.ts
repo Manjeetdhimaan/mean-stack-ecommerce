@@ -80,21 +80,6 @@ import { ProductService, ProductsResponse } from '../../services/products.servic
           }))
         ])
       ])
-    ]),
-    trigger('listAnimation', [
-      transition('* => *', [ // each time the binding value changes
-        query(':leave', [
-          stagger(100, [
-            animate('0.5s', style({ opacity: 0 }))
-          ])
-        ], { optional: true }),
-        query(':enter', [
-          style({ opacity: 0 }),
-          stagger(100, [
-            animate('0.5s', style({ opacity: 1 }))
-          ])
-        ], { optional: true })
-      ])
     ])
   ]
 })
@@ -102,7 +87,8 @@ export class ProductsSearchComponent implements OnInit {
   products: Product[] = [];
   isLoadingProducts = false;
   serverErrMsg: string;
-  searchText: string
+  searchText: string;
+  isNotFound = false;
 
   constructor(private productService: ProductService) { }
 
@@ -121,20 +107,23 @@ export class ProductsSearchComponent implements OnInit {
       this.products = [];
     }
     else {
-      this.products.length = 3
-      console.log('else', this.searchText);
+      this.isNotFound = false;
+      this._getProducts(this.searchText);
     }
   }
 
-  private _getProducts(categoriesFilter?: any) {
+  private _getProducts(searchText?: any) {
     this.isLoadingProducts = true;
     // getting products without filters
-    this.productService.getProducts(categoriesFilter).subscribe((res: ProductsResponse) => {
+    this.productService.getProducts(undefined, undefined, searchText).subscribe((res: ProductsResponse) => {
       if (!res['products']) {
         this.products = [];
+        this.isNotFound = true;
       }
       else {
         this.products = res['products'];
+        console.log(this.products);
+        this.isNotFound = false;
       }
       this.isLoadingProducts = false;
       this.serverErrMsg = '';

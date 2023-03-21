@@ -13,7 +13,14 @@ module.exports.getProducts = (req, res, next) => {
             filter = {"_id" : {"$in" : req.query.productsIds.split(',')}}
         }
         if(req.query.search) {
-            filter = {"_id" : {"$in" : req.query.search.split(',')}}
+            filter = {"$or" : [
+                {name: { $regex : new RegExp(req.query.search, "i") }},
+                {brand: {$regex: new RegExp(req.query.search, "i")}},
+                {'category.name': {$regex: new RegExp(req.query.search, "i")}},
+            ]}
+            // filter = {$text: {
+            //     $search: req.query.search
+            // }}
         }
         Product.find(filter).select('name price image currency').populate('category', 'name').then(products => {
             if (!products || products.length < 1) {

@@ -64,6 +64,9 @@ const productSchema = new mongoose.Schema({
     timestamps: true
 });
 
+// productSchema.index({'$**': 'text'});
+productSchema.index({name: 'text', 'category.name': 'text'});
+
 productSchema.virtual('id').get(function() {
     return this._id.toHexString();
 });
