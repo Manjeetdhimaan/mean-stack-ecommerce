@@ -7,7 +7,7 @@ module.exports.getProducts = (req, res, next) => {
     try {
         let filter = {};
         if (req.query.categories) {
-            filter = {category: req.query.categories.split(',')}
+            filter = {category: req.query.categories.split(':')}
         }
         if(req.query.productsIds) {
             filter = {"_id" : {"$in" : req.query.productsIds.split(',')}}

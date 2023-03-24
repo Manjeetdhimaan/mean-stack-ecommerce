@@ -29,6 +29,7 @@ export class ProductsListComponent implements OnInit {
     })
     // this._getProducts();
     this._getCategories();
+    this.router.routeReuseStrategy.shouldReuseRoute = () => true;
   }
 
   private _getCategories() {
@@ -49,6 +50,7 @@ export class ProductsListComponent implements OnInit {
     this.isLoadingProducts = true;
     this.activatedRoute.queryParams.subscribe((queryParams: Params) => {
       if(queryParams['categories']) {
+        console.log(queryParams['categories'])
         categoriesFilter = queryParams['categories'];
         // getting products with filters
         this.productService.getProducts(categoriesFilter).subscribe((res: ProductsResponse) => {
@@ -73,7 +75,7 @@ export class ProductsListComponent implements OnInit {
       }
       else {
         // getting products without filters
-        this.productService.getProducts(categoriesFilter).subscribe((res: ProductsResponse) => {
+        this.productService.getProducts().subscribe((res: ProductsResponse) => {
           if (!res['products']) {
             this.products = [];
           }
@@ -106,7 +108,15 @@ export class ProductsListComponent implements OnInit {
   categoryFilter() {
     this.isLoadingCategories = true;
     const selectedCategories = this.categories.filter(category => category.checked).map(category => category._id);
-    this.router.navigate([`/products`], {queryParams: {categories: selectedCategories}});
+    if (selectedCategories.length <= 0) {
+      this.router.navigate([`/products`]);
+      this.ngOnInit();
+      this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+      return;
+    }
+    else {
+      this.router.navigate([`/products`], {queryParams: {categories: selectedCategories.join(':')}});
+    }
     // this._getProducts();
   }
 }
