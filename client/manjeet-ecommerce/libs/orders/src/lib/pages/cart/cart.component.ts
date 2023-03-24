@@ -128,6 +128,7 @@ export class CartComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isLoading = true;
     if (!this.authService.isUserLoggedIn()) {
       this._getLocalStorageCart();
     }
@@ -145,24 +146,29 @@ export class CartComponent implements OnInit {
               product: res['product'],
               quantity: cartItem['quantity']
             });
+            this.isLoading = false;
           }, err => {
             this._errorHandler(err);
+            this.isLoading = false;
           });
         })
       }
+      else {
+        this.isLoading = false;
+      }
     });
+
   }
 
   private _getCartFromServer() {
-    this.isLoading = true;
+
     const fetchedCart = localStorage.getItem(CART_KEY);
     // if cart is present in localstorage, store that in user account and clear localstorage cart
-    if (fetchedCart && JSON.parse(fetchedCart).items.length >0) {
+    if (fetchedCart && JSON.parse(fetchedCart).items.length > 0) {
       const cart = JSON.parse(fetchedCart);
-      this.cartService.postMultipleCart(cart).subscribe(res => {
+      this.cartService.postMultipleCart(cart).subscribe(() => {
         this.cartService.emptyCart();
         this.cartService.getCartFromServer().subscribe(res => {
-          this.isLoading = false;
           res.products.forEach((product: any) => {
             this.totalPrice += +product.productId.price * +product.quantity;
             this.quantity += +product.quantity;
@@ -172,6 +178,7 @@ export class CartComponent implements OnInit {
             });
             this.cartService.serverCart$.next({ totalPrice: +this.totalPrice, quantity: this.quantity });
           })
+          this.isLoading = false;
         }, err => {
           this.isLoading = false;
           this._errorHandler(err);
@@ -183,7 +190,6 @@ export class CartComponent implements OnInit {
     }
     else {
       this.cartService.getCartFromServer().subscribe(res => {
-        this.isLoading = false;
         res.products.map(product => {
           this.totalPrice += +product.productId.price * +product.quantity;
           this.quantity += +product.quantity;
@@ -195,6 +201,7 @@ export class CartComponent implements OnInit {
             quantity: product.quantity
           });
         })
+        this.isLoading = false;
       }, err => {
         this.isLoading = false;
         this._errorHandler(err);
@@ -234,11 +241,15 @@ export class CartComponent implements OnInit {
 
   onDeleteItemFromCart(productId: string, index: number, price: number, quantity: number) {
     this.isLoadingDelete = true;
+    if (!this.authService.isUserLoggedIn()) {
+      this.cartService.deleteItemFromCart(productId);
+      this.cartItems.splice(index, 1);
+    }
     this.cartService.postDeleteProductCart(productId).subscribe(res => {
       this.isLoadingDelete = false;
       this.cartItems.splice(index, 1);
-      this.cartService.serverCart$.next({ totalPrice: (this.totalPrice - +price* +quantity), quantity: this.quantity - quantity });
-      this.totalPrice = (this.totalPrice - (+price* +quantity));
+      this.cartService.serverCart$.next({ totalPrice: (this.totalPrice - +price * +quantity), quantity: this.quantity - quantity });
+      this.totalPrice = (this.totalPrice - (+price * +quantity));
       this.quantity = (this.quantity - quantity)
       this.messageService.add({ severity: 'success', summary: 'Success', detail: res['message'] });
     }, err => {

@@ -9,6 +9,7 @@ import { CheckboxModule } from 'primeng/checkbox';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { RatingModule } from 'primeng/rating';
 import { ToastModule } from 'primeng/toast';
+import { SkeletonModule } from 'primeng/skeleton';
 
 import { ProductsSearchComponent } from './components/products-search/products-search.component';
 import { CategoriesBannerComponent } from './components/categories-banner/categories-banner.component';
@@ -45,7 +46,8 @@ const routes: Routes = [
     InputNumberModule,
     RatingModule,
     UiModule,
-    ToastModule
+    ToastModule,
+    SkeletonModule
   ],
   declarations: [
     ProductsSearchComponent,

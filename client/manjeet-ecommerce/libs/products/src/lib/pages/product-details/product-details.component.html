@@ -1,5 +1,4 @@
-<i *ngIf="isLoading" class="pi pi-spin pi-spinner" style="font-size: 2rem"></i>
-<div class="product-page" *ngIf="product">
+<div class="product-page animate__animated animate__fadeIn" *ngIf="product">
   <div class="grid">
     <div class="col-6">
       <ui-gallery [mainImageSrc]="product.image" [images]="product.images"></ui-gallery>
@@ -41,6 +40,22 @@
   <div class="grid product-rich-desc">
     <div class="col-12">
       <div [innerHTML]="product.richDescription"></div>
+    </div>
+  </div>
+</div>
+
+<div class="product-page animate__animated animate__fadeIn" *ngIf="!product && isLoading">
+  <div class="grid">
+    <div class="col-6">
+      <p-skeleton height="25.5rem" styleClass="mb-6" borderRadius="16px"></p-skeleton>
+    </div>
+    <div class="col-6 product">
+      <p-skeleton height="25.5rem" styleClass="mb-6" borderRadius="16px"></p-skeleton>
+    </div>
+  </div>
+  <div class="grid product-rich-desc">
+    <div class="col-12">
+      <p-skeleton height="15.5rem" styleClass="mb-6" borderRadius="16px"></p-skeleton>
     </div>
   </div>
 </div>

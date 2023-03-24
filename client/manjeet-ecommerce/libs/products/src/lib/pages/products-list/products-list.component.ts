@@ -17,6 +17,7 @@ export class ProductsListComponent implements OnInit {
   categories: Category[] = [];
   isLoadingProducts = false;
   isLoadingCategories = false;
+  isLoadingFilters = false;
   isCategoryPage = false;
   serverErrMsg: string;
 
@@ -29,7 +30,7 @@ export class ProductsListComponent implements OnInit {
     })
     // this._getProducts();
     this._getCategories();
-    this.router.routeReuseStrategy.shouldReuseRoute = () => true;
+    // this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
 
   private _getCategories() {
@@ -48,50 +49,56 @@ export class ProductsListComponent implements OnInit {
 
   private _getProducts(categoriesFilter?: any) {
     this.isLoadingProducts = true;
-    this.activatedRoute.queryParams.subscribe((queryParams: Params) => {
-      if(queryParams['categories']) {
-        console.log(queryParams['categories'])
-        categoriesFilter = queryParams['categories'];
-        // getting products with filters
-        this.productService.getProducts(categoriesFilter).subscribe((res: ProductsResponse) => {
-          // marking filter value as checked when after refreshing or loading page
-          this.categories.map(category => {
+    setTimeout(() => {
+      this.activatedRoute.queryParams.subscribe((queryParams: Params) => {
+        if (queryParams['categories']) {
+          categoriesFilter = queryParams['categories'];
+          // getting products with filters
+          this.productService.getProducts(categoriesFilter).subscribe((res: ProductsResponse) => {
+            // marking filter value as checked when after refreshing or loading page
+            this.categories.map(category => {
               category.checked = (categoriesFilter.indexOf(category._id) > -1);
+            })
+            if (!res['products']) {
+              this.products = [];
+            }
+            else {
+              this.products = res['products'];
+            }
+            this.isLoadingProducts = false;
+            this.isLoadingCategories = false;
+            this.isLoadingFilters = false;
+            this.serverErrMsg = '';
+          }, err => {
+            this.isLoadingProducts = false;
+            this.isLoadingCategories = false;
+            this.isLoadingFilters = false;
+            this._errorHandler(err);
           })
-          if (!res['products']) {
-            this.products = [];
-          }
-          else {
-            this.products = res['products'];
-          }
-          this.isLoadingProducts = false;
-          this.isLoadingCategories = false;
-          this.serverErrMsg = '';
-        }, err => {
-          this.isLoadingProducts = false;
-          this.isLoadingCategories = false;
-          this._errorHandler(err);
-        })
-      }
-      else {
-        // getting products without filters
-        this.productService.getProducts().subscribe((res: ProductsResponse) => {
-          if (!res['products']) {
-            this.products = [];
-          }
-          else {
-            this.products = res['products'];
-          }
-          this.isLoadingProducts = false;
-          this.isLoadingCategories = false;
-          this.serverErrMsg = '';
-        }, err => {
-          this.isLoadingProducts = false;
-          this.isLoadingCategories = false;
-          this._errorHandler(err);
-        })
-      }
-    })
+        }
+        else {
+          // getting products without filters;
+          this.productService.getProducts().subscribe((res: ProductsResponse) => {
+            if (!res['products']) {
+              this.products = [];
+            }
+            else {
+              this.products = res['products'];
+            }
+            this.isLoadingProducts = false;
+            this.isLoadingFilters = false;
+            this.isLoadingCategories = false;
+            this.serverErrMsg = '';
+          }, err => {
+            this.isLoadingProducts = false;
+            this.isLoadingFilters = false;
+            this.isLoadingCategories = false;
+            this._errorHandler(err);
+          })
+        }
+      })
+    }, 0);
+
   }
 
   private _errorHandler(err: HttpErrorResponse) {
@@ -106,16 +113,16 @@ export class ProductsListComponent implements OnInit {
   }
 
   categoryFilter() {
-    this.isLoadingCategories = true;
+    this.isLoadingFilters = true;
     const selectedCategories = this.categories.filter(category => category.checked).map(category => category._id);
     if (selectedCategories.length <= 0) {
       this.router.navigate([`/products`]);
-      this.ngOnInit();
-      this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+      // this.ngOnInit();
+      // this.router.routeReuseStrategy.shouldReuseRoute = () => false;
       return;
     }
     else {
-      this.router.navigate([`/products`], {queryParams: {categories: selectedCategories.join(':')}});
+      this.router.navigate([`.`], {relativeTo: this.activatedRoute , queryParams: { categories: selectedCategories.join(':') } });
     }
     // this._getProducts();
   }

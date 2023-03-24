@@ -97,6 +97,25 @@ export class CartService {
     this.cart$.next(intialCart);
   }
 
+  deleteItemFromCart(productId: string) {
+    const fetchedCart = localStorage.getItem(CART_KEY);
+    if (fetchedCart) {
+      const cartJson = JSON.parse(fetchedCart).items;
+      const filteredItems = cartJson.filter((item: CartItem) => item.productId !== productId);
+      const cart = {
+        items: filteredItems
+      }
+      // update data in localstorage
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+
+      // update data in UI
+      const fetchedCartAfterUpdate = localStorage.getItem(CART_KEY);
+      if (fetchedCartAfterUpdate) {
+        this.cart$.next(JSON.parse(fetchedCartAfterUpdate))
+      }
+    }
+  }
+
   // server cart handling methods if user is logged in
   postCart(cartObject: CartItem, increaseQuantity?:boolean): Observable<PostCartResponse> {
     if(increaseQuantity) {

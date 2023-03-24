@@ -18,7 +18,7 @@
         <i *ngIf="isLoading" class="pi pi-spin pi-spinner"></i>
       </div>
 
-      <div *ngIf="cartItems.length>0">
+      <div *ngIf="cartItems && cartItems.length>0">
       <div class="cart-item mb-5" [@list1] *ngFor="let cartItem of cartItems; let i = index">
         <div class="grid p-fluid" [@list2]>
           <div class="col-2 cart-item-image">

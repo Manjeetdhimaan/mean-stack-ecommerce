@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -14,16 +14,18 @@ import { MessageService } from 'primeng/api';
   templateUrl: './product-details.component.html',
   styles: []
 })
-export class ProductDetailsComponent implements OnInit {
+export class ProductDetailsComponent implements OnInit, OnDestroy {
   product: Product;
   quantity: number = 1;
   isLoading = false;
   isLoadingCart = false;
   serverErrMsg: string;
+  prev: any;
 
   constructor(private productService: ProductService, private activatedRoute: ActivatedRoute, private cartService: CartService, private authService: AuthService, private messageService: MessageService, private router: Router) { }
 
   ngOnInit(): void {
+    this.prev = this.router.routeReuseStrategy.shouldReuseRoute;
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
     this.activatedRoute.params.subscribe((params: Params) => {
       if (params['productId']) {
@@ -74,5 +76,9 @@ export class ProductDetailsComponent implements OnInit {
     } else {
       this.serverErrMsg = 'An error occured. Please try again!';
     }
+  }
+
+  ngOnDestroy(): void {
+    this.router.routeReuseStrategy.shouldReuseRoute = this.prev;
   }
 }
