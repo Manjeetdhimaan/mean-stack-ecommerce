@@ -11,6 +11,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { SkeletonModule } from 'primeng/skeleton';
 
 import { ordersRoutes } from './lib.routes';
 import { CartIconComponent } from './components/cart-icon/cart-icon.component';
@@ -33,7 +34,8 @@ import { ThanksComponent } from './pages/thanks/thanks.component';
     InputMaskModule,
     ToastModule,
     RouterModule.forRoot(ordersRoutes),
-    NgxStripeModule.forRoot('pk_test_51Mkl8USHSaj2D0AU1gNSXyfTaJEF8ED76yYPZfHD9hKVBCYZMqTbrOoD8QHtpkusdMqnwQYv9clrrTSDnYbvTCqq00Tphb5Q2v')
+    NgxStripeModule.forRoot('pk_test_51Mkl8USHSaj2D0AU1gNSXyfTaJEF8ED76yYPZfHD9hKVBCYZMqTbrOoD8QHtpkusdMqnwQYv9clrrTSDnYbvTCqq00Tphb5Q2v'),
+    SkeletonModule
   ],
   declarations: [
     CartIconComponent,

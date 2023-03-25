@@ -4,7 +4,7 @@
 
 export const environment = {
   production: true,
-  apiBaseUrl: 'http://localhost:3000/api/v1',
+  apiBaseUrl: 'https://ng-shop-pi.vercel.app/api/v1',
   domain: window.location.protocol + "//" +window.location.host
 };
 

@@ -1,4 +1,4 @@
-<div class="cart-page animate__animated animate__bounceInDown">
+<div class="cart-page">
   <div class="grid">
     <div class="col-8">
       <div>
@@ -18,9 +18,13 @@
         <i *ngIf="isLoading" class="pi pi-spin pi-spinner"></i>
       </div>
 
+      <div *ngIf="isLoading">
+        <p-skeleton height="9rem" styleClass="mb-4" borderRadius="16px" *ngFor="let skeletion of ['', '', '']"></p-skeleton>
+      </div>
+
       <div *ngIf="cartItems && cartItems.length>0">
-      <div class="cart-item mb-5" [@list1] *ngFor="let cartItem of cartItems; let i = index">
-        <div class="grid p-fluid" [@list2]>
+      <div class="cart-item mb-5" *ngFor="let cartItem of cartItems; let i = index">
+        <div class="grid p-fluid" >
           <div class="col-2 cart-item-image">
             <img
               [src]="cartItem.product.image"
@@ -56,7 +60,7 @@
         </div>
       </div>
     </div>
-    <h3 *ngIf="cartItems.length<=0 && !isLoading">No Items in the cart</h3>
+    <h3 *ngIf="cartItems.length<1 && !isLoading">No Items in the cart</h3>
     </div>
     <div class="col-4" *ngIf="cartItems.length>0">
       <orders-order-summary (loadingEmitter)="onLoading($event)"></orders-order-summary>

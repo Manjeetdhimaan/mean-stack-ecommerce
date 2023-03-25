@@ -8,7 +8,6 @@ import { ProductService } from '@manjeet-ecommerce/products';
 import { AuthService } from '@manjeet-ecommerce/users';
 import { CartProduct } from '../../models/cart.model';
 import { CartService, CART_KEY, PostCartResponse } from '../../services/cart.service';
-import { environment } from '@env/environment';
 
 @Component({
   selector: 'orders-cart',
@@ -74,44 +73,6 @@ import { environment } from '@env/environment';
           }))
         ])
       ])
-    ]),
-    trigger('listAnimation', [
-      transition('* => *', [ // each time the binding value changes
-        query(':leave', [
-          stagger(100, [
-            animate('0.5s', style({ opacity: 0 }))
-          ])
-        ], { optional: true }),
-        query(':enter', [
-          style({ opacity: 0 }),
-          stagger(100, [
-            animate('0.5s', style({ opacity: 1 }))
-          ])
-        ], { optional: true })
-      ])
-    ]),
-    trigger("slide", [
-      transition("* => *", [
-        style({ transform: "translateY(100%)", opacity: 0 }),
-        animate(2000, style({ transform: "translateY(-100%)", opacity: 1 }))
-      ])
-    ]),
-    trigger("enterSlide", [
-      transition("* => *", [
-        // each time the binding value changes
-        query(
-          ":enter",
-          [
-            stagger(2000, [
-              style({ transform: "translateY(100%)", opacity: 0 }),
-              animate(2000, style({ transform: "translateY(-100%)", opacity: 1 }))
-            ])
-          ],
-          {
-            optional: true
-          }
-        )
-      ])
     ])
   ]
 })
@@ -157,11 +118,9 @@ export class CartComponent implements OnInit {
         this.isLoading = false;
       }
     });
-
   }
 
   private _getCartFromServer() {
-
     const fetchedCart = localStorage.getItem(CART_KEY);
     // if cart is present in localstorage, store that in user account and clear localstorage cart
     if (fetchedCart && JSON.parse(fetchedCart).items.length > 0) {
@@ -211,7 +170,7 @@ export class CartComponent implements OnInit {
   }
 
   onLoading(event: boolean) {
-    this.isLoading = event;
+    this.isLoadingDelete = event;
   }
 
   onUpdateQuantity(event: HTMLInputElement, productId: string) {
@@ -244,18 +203,21 @@ export class CartComponent implements OnInit {
     if (!this.authService.isUserLoggedIn()) {
       this.cartService.deleteItemFromCart(productId);
       this.cartItems.splice(index, 1);
+      this.isLoadingDelete = false;
     }
-    this.cartService.postDeleteProductCart(productId).subscribe(res => {
-      this.isLoadingDelete = false;
-      this.cartItems.splice(index, 1);
-      this.cartService.serverCart$.next({ totalPrice: (this.totalPrice - +price * +quantity), quantity: this.quantity - quantity });
-      this.totalPrice = (this.totalPrice - (+price * +quantity));
-      this.quantity = (this.quantity - quantity)
-      this.messageService.add({ severity: 'success', summary: 'Success', detail: res['message'] });
-    }, err => {
-      this.isLoadingDelete = false;
-      this._errorHandler(err);
-    });
+    else {
+      this.cartService.postDeleteProductCart(productId).subscribe(res => {
+        this.isLoadingDelete = false;
+        this.cartItems.splice(index, 1);
+        this.cartService.serverCart$.next({ totalPrice: (this.totalPrice - +price * +quantity), quantity: this.quantity - quantity });
+        this.totalPrice = (this.totalPrice - (+price * +quantity));
+        this.quantity = (this.quantity - quantity)
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: res['message'] });
+      }, err => {
+        this.isLoadingDelete = false;
+        this._errorHandler(err);
+      });
+    }
   }
 
   private _errorHandler(err: HttpErrorResponse) {

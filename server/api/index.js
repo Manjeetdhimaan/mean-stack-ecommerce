@@ -5,16 +5,16 @@ const path = require('path');
 
 
 require('dotenv').config();
-require('./models/db.model');
-const devEnv = require('./dev-env/dev-env');
-const productRoutes = require('./routes/product.routes');
-const categoryRoutes = require('./routes/category.routes');
-const orderRoutes = require('./routes/order.routes');
-const userRoutes = require('./routes/user.routes');
+require('.../models/db.model');
+const devEnv = require('../dev-env/dev-env');
+const productRoutes = require('../routes/product.routes');
+const categoryRoutes = require('../routes/category.routes');
+const orderRoutes = require('../routes/order.routes');
+const userRoutes = require('../routes/user.routes');
 
 const port = process.env.PORT || devEnv.PORT;
 const api = process.env.API_URL || devEnv.API_URL;
-// const authJwt = require('./middlewares/jwt-auth');
+// const authJwt = require('../middlewares/jwt-auth');
 const app = express();
 const corsOptions = {
     origin: '*',
