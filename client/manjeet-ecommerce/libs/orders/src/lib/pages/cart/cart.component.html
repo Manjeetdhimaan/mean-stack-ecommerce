@@ -15,7 +15,7 @@
       </div>
       <div class="cart-shipping mb-5">
         Shipping after payment, Delivery time: 1 to 4 working days
-        <i *ngIf="isLoading" class="pi pi-spin pi-spinner"></i>
+        <i *ngIf="isLoading || isLoadingUpdateQuantity" class="pi pi-spin pi-spinner"></i>
       </div>
 
       <div *ngIf="isLoading">
@@ -41,7 +41,7 @@
             <div class="field cart-item-quantity">
               <label for="quantity">Quantity</label>
               <p-inputNumber
-                [disabled]="isLoading"
+                [disabled]="isLoadingUpdateQuantity"
                 [(ngModel)]="cartItem.quantity"
                 aria-valuenow="9"
                 mode="decimal"

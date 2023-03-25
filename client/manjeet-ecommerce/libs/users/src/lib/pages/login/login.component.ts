@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
 
           const fetchedCart = localStorage.getItem(CART_KEY);
           // if cart is present in localstorage, store that in user account and clear localstorage cart
-          if (fetchedCart && JSON.parse(fetchedCart).items.length >0) {
+          if (fetchedCart && JSON.parse(fetchedCart).items && JSON.parse(fetchedCart).items.length >0) {
             const cart = JSON.parse(fetchedCart);
             this.cartService.postMultipleCart(cart).subscribe(res => {
               this.cartService.emptyCart();

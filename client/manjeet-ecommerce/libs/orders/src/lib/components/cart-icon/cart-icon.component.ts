@@ -33,6 +33,9 @@ export class CartIconComponent implements OnInit, OnDestroy {
             cart.items.map((item: CartItem) => {
               this.cartCount += item.quantity;
             });
+            if(this.cartCount < 0) {
+              this.cartCount = 0
+            }
           }
         })
         // if (this.cartService.getCartItemsFromLocalStorage()) {
@@ -45,6 +48,9 @@ export class CartIconComponent implements OnInit, OnDestroy {
       else {
         this.serversubs$ = this.cartService.serverCart$.pipe(take(1)).subscribe((cart: { totalPrice: number, quantity: number }) => {
           this.cartCount = cart.quantity;
+          if(this.cartCount < 0) {
+            this.cartCount = 0
+          }
         });
       }
     });

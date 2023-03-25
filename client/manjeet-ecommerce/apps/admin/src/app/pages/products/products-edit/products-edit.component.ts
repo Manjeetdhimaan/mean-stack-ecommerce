@@ -230,12 +230,14 @@ export class ProductsEditComponent implements OnInit {
     if (!this.productGalleryForm.valid) return;
     this.isLoading = true;
     const productFormData = new FormData();
-    const filesLength: number = this.productGalleryForm.controls['images'].value.length;
-    for (let i = 0; i <= filesLength; i++) {
-      productFormData.append('images', this.productGalleryForm.controls['images'].value[i]);
-    }
-    if (this.editMode) {
-      this._updateGalleryOfProduct(productFormData);
+    if(this.productGalleryForm.controls['images'].value) {
+      const filesLength: number = this.productGalleryForm.controls['images'].value.length;
+      for (let i = 0; i <= filesLength; i++) {
+        productFormData.append('images', this.productGalleryForm.controls['images'].value[i]);
+      }
+      if (this.editMode) {
+        this._updateGalleryOfProduct(productFormData);
+      }
     }
   }
 

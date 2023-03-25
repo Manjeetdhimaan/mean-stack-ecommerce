@@ -25,7 +25,7 @@ export class ProductsListComponent implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((params: Params) => {
-      params['categoryId'] ? this._getProducts([params['categoryId']]) : this._getProducts();
+      params['categoryId'] ? this._getCategoryProducts(params['categoryId']) : this._getProducts();
       params['categoryId'] ? this.isCategoryPage = true : this.isCategoryPage = false;
     })
     // this._getProducts();
@@ -99,6 +99,27 @@ export class ProductsListComponent implements OnInit {
       })
     }, 0);
 
+  }
+
+  private _getCategoryProducts(categoriesFilter: any[]) {
+    this.isLoadingProducts = true;
+    this.productService.getProducts(categoriesFilter).subscribe((res: ProductsResponse) => {
+      if (!res['products']) {
+        this.products = [];
+      }
+      else {
+        this.products = res['products'];
+      }
+      this.isLoadingProducts = false;
+      this.isLoadingFilters = false;
+      this.isLoadingCategories = false;
+      this.serverErrMsg = '';
+    }, err => {
+      this.isLoadingProducts = false;
+      this.isLoadingFilters = false;
+      this.isLoadingCategories = false;
+      this._errorHandler(err);
+    })
   }
 
   private _errorHandler(err: HttpErrorResponse) {

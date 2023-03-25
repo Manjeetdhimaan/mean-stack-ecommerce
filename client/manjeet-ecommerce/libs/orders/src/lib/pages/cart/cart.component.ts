@@ -82,6 +82,7 @@ export class CartComponent implements OnInit {
   serverErrMsg: string;
   isLoading: boolean = false;
   isLoadingDelete: boolean = false;
+  isLoadingUpdateQuantity: boolean = false;
   totalPrice: number = 0;
   quantity: number = 0;
 
@@ -100,7 +101,7 @@ export class CartComponent implements OnInit {
 
   private _getLocalStorageCart() {
     this.cartService.cart$.pipe(take(1)).subscribe(respCart => {
-      if (respCart && respCart.items.length > 0) {
+      if (respCart.items && respCart.items.length > 0) {
         respCart.items.forEach(cartItem => {
           this.productService.getProduct(cartItem.productId).subscribe(res => {
             this.cartItems.push({
@@ -123,7 +124,7 @@ export class CartComponent implements OnInit {
   private _getCartFromServer() {
     const fetchedCart = localStorage.getItem(CART_KEY);
     // if cart is present in localstorage, store that in user account and clear localstorage cart
-    if (fetchedCart && JSON.parse(fetchedCart).items.length > 0) {
+    if (fetchedCart && JSON.parse(fetchedCart).items && JSON.parse(fetchedCart).items.length > 0) {
       const cart = JSON.parse(fetchedCart);
       this.cartService.postMultipleCart(cart).subscribe(() => {
         this.cartService.emptyCart();
@@ -185,13 +186,15 @@ export class CartComponent implements OnInit {
         productId: productId,
         quantity: +event.value
       }
-      this.isLoading = true;
+      this.isLoadingUpdateQuantity = true;
       this.cartService.postCart(cartItem).subscribe((res: PostCartResponse) => {
         this.cartService.serverCart$.next({ totalPrice: +res.totalPrice, quantity: +res.quantity });
-        this.isLoading = false;
+        this.totalPrice = +res.totalPrice;
+        this.quantity = +res.quantity;
+        this.isLoadingUpdateQuantity = false;
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Cart Updated' });
       }, err => {
-        this.isLoading = false;
+        this.isLoadingUpdateQuantity = false;
         this._errorHandler(err);
       })
     }
@@ -208,10 +211,10 @@ export class CartComponent implements OnInit {
     else {
       this.cartService.postDeleteProductCart(productId).subscribe(res => {
         this.isLoadingDelete = false;
-        this.cartItems.splice(index, 1);
-        this.cartService.serverCart$.next({ totalPrice: (this.totalPrice - +price * +quantity), quantity: this.quantity - quantity });
         this.totalPrice = (this.totalPrice - (+price * +quantity));
-        this.quantity = (this.quantity - quantity)
+        this.quantity = (this.quantity - quantity);
+        this.cartService.serverCart$.next({ totalPrice: this.totalPrice, quantity: this.quantity});
+        this.cartItems.splice(index, 1);
         this.messageService.add({ severity: 'success', summary: 'Success', detail: res['message'] });
       }, err => {
         this.isLoadingDelete = false;

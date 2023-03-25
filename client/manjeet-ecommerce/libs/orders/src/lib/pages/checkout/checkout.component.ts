@@ -125,7 +125,7 @@ export class CheckoutComponent implements OnInit {
     };
 
     const domain = environment.domain;
-    const ord = Object.assign({}, {order, domain: domain});
+    // const ord = Object.assign({}, {order, domain: domain});
     this.ordersService.createOrderSession(order, domain).pipe(
       switchMap(session => {
         if (session.sessionId) {
