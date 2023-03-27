@@ -62,7 +62,7 @@ export class ProductService {
   }
 
   updateGalleryOfProduct(productId: string, productBody: FormData): Observable<ServerResponse> {
-    return this.http.put<ServerResponse>(`${this.productBaseUrl}//update-product-gallery/${productId}`, productBody);
+    return this.http.put<ServerResponse>(`${this.productBaseUrl}/update-product-gallery/${productId}`, productBody);
   }
 
   deleteProduct(productId: string): Observable<ServerResponse> {

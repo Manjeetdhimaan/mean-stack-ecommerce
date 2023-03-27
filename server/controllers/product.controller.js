@@ -181,7 +181,6 @@ module.exports.updateProduct = async (req, res, next) => {
                     founededProduct.dateCreated = req.body.dateCreated;
                 }
             };
-
             founededProduct.save().then((savedProduct) => {
                 if (!savedProduct) {
                     return res.status(503).send({

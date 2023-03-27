@@ -5,7 +5,7 @@ const path = require('path');
 
 
 require('dotenv').config();
-require('.../models/db.model');
+require('../models/db.model');
 const devEnv = require('../dev-env/dev-env');
 const productRoutes = require('../routes/product.routes');
 const categoryRoutes = require('../routes/category.routes');
@@ -16,16 +16,11 @@ const port = process.env.PORT || devEnv.PORT;
 const api = process.env.API_URL || devEnv.API_URL;
 // const authJwt = require('../middlewares/jwt-auth');
 const app = express();
-const corsOptions = {
-    origin: '*',
-    credentials: true,
-    optionSuccessStatus: 200
-  }
-app.use(cors(corsOptions));
+app.use(cors());
 
 // Middelwares
 app.use(bodyParser.json());
-app.use("/public/uploads", express.static(path.join(__dirname, "public/uploads")));
+app.use("public/uploads", express.static(path.join(__dirname, "public/uploads")));
 // app.use(authJwt());
 
 // Routes

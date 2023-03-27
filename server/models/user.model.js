@@ -99,7 +99,7 @@ userSchema.methods.addMultipleToCart = function (products) {
         products.map((p, index) => {
             if (cartProdIds.includes(p.productId.toString())) {
                 if (this.cart.items[index]) {
-                    newQuantity = this.cart.items[index]?.quantity + p.quantity;
+                    newQuantity = this.cart.items[index].quantity + p.quantity;
                     updatedCartItems[index].quantity = newQuantity;
                 }
             } else {

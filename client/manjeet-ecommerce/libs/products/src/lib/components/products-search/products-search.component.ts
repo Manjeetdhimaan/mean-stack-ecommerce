@@ -122,7 +122,6 @@ export class ProductsSearchComponent implements OnInit {
       }
       else {
         this.products = res['products'];
-        console.log(this.products);
         this.isNotFound = false;
       }
       this.isLoadingProducts = false;

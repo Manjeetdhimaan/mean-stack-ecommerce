@@ -16,12 +16,7 @@ const port = process.env.PORT || devEnv.PORT;
 const api = process.env.API_URL || devEnv.API_URL;
 // const authJwt = require('./middlewares/jwt-auth');
 const app = express();
-const corsOptions = {
-    origin: '*',
-    credentials: true,
-    optionSuccessStatus: 200
-  }
-app.use(cors(corsOptions));
+app.use(cors());
 
 // Middelwares
 app.use(bodyParser.json());

@@ -46,8 +46,11 @@ export class CartService {
 
   setItemToLocalStorageCart(fetchedCart: string, cartItem: CartItem, updateQuantity?: boolean) {
     const cart: Cart = JSON.parse(fetchedCart);
-    const catrItemExitsIndex = cart.items.findIndex(item => item.productId === cartItem.productId);
-    if (catrItemExitsIndex >= 0) {
+    let catrItemExitsIndex;
+    if(cart && cart.items) {
+       catrItemExitsIndex = cart.items.findIndex(item => item.productId === cartItem.productId);
+    }
+    if (catrItemExitsIndex && catrItemExitsIndex >= 0) {
       if(updateQuantity) {
         cart.items[catrItemExitsIndex].quantity = cartItem.quantity;
       }
